@@ -60,6 +60,15 @@ void AARCharacter::Look(const FInputActionValue& Value)
 	AddControllerPitchInput(InputValue.Y);
 }
 
+void AARCharacter::PrimaryAttack(const FInputActionValue& Value)
+{
+	const FVector SpawnLocation = GetMesh()->GetSocketLocation("Muzzle_01");
+	const FTransform SpawnTransform = FTransform(GetActorRotation(), SpawnLocation);
+	FActorSpawnParameters SpawnParameters;
+	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	GetWorld()->SpawnActor<AActor>(ProjectileClass, SpawnTransform, SpawnParameters);
+}
+
 // Called every frame
 void AARCharacter::Tick(float DeltaTime)
 {
@@ -76,6 +85,7 @@ void AARCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	{
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AARCharacter::Move);
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AARCharacter::Look);
+		EnhancedInputComponent->BindAction(PrimaryAttackAction, ETriggerEvent::Started, this, &AARCharacter::PrimaryAttack);
 	}
 }
 

@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "ARCharacter.generated.h"
 
+class UARInteractionComponent;
 class UCameraComponent;
 class USpringArmComponent;
 class UInputMappingContext;
@@ -33,6 +34,9 @@ protected:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* JumpAction{nullptr};
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* InteractAction{nullptr};
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<AActor> ProjectileClass;
@@ -48,6 +52,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere)
 	UCameraComponent* CameraComponent;
+
+	UPROPERTY(VisibleAnywhere)
+	UARInteractionComponent* InteractionComponent;
 	
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -56,6 +63,7 @@ protected:
 	void OnLook(const FInputActionValue& Value);
 	void OnPrimaryAttack(const FInputActionValue& Value);
 	void OnJump(const FInputActionValue& Value);
+	void OnInteract(const FInputActionValue& Value);
 
 public:	
 	// Called every frame

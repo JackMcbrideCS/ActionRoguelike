@@ -3,6 +3,7 @@
 
 #include "ARCharacter.h"
 
+#include "ARInteractionComponent.h"
 #include "DrawDebugHelpers.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
@@ -22,6 +23,8 @@ AARCharacter::AARCharacter()
 	
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>("Camera Component");
 	CameraComponent->SetupAttachment(SpringArmComponent);
+
+	InteractionComponent = CreateDefaultSubobject<UARInteractionComponent>("Interaction Component");
 
 	bUseControllerRotationYaw = false;
 	GetCharacterMovement()->bOrientRotationToMovement = true;
@@ -74,6 +77,11 @@ void AARCharacter::OnJump(const FInputActionValue& Value)
 	Jump();
 }
 
+void AARCharacter::OnInteract(const FInputActionValue& Value)
+{
+	InteractionComponent->PrimaryInteract();
+}
+
 // Called every frame
 void AARCharacter::Tick(float DeltaTime)
 {
@@ -92,6 +100,7 @@ void AARCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AARCharacter::OnLook);
 		EnhancedInputComponent->BindAction(PrimaryAttackAction, ETriggerEvent::Started, this, &AARCharacter::OnPrimaryAttack);
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &AARCharacter::Jump);
+		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Started, this, &AARCharacter::OnInteract);
 	}
 }
 

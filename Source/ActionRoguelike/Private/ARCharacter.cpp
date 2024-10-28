@@ -42,7 +42,7 @@ void AARCharacter::BeginPlay()
 	}	
 }
 
-void AARCharacter::Move(const FInputActionValue& Value)
+void AARCharacter::OnMove(const FInputActionValue& Value)
 {
 	const FVector2D InputValue = Value.Get<FVector2D>();
 	const FRotator ControlRotation = Controller->GetControlRotation();
@@ -53,20 +53,25 @@ void AARCharacter::Move(const FInputActionValue& Value)
 	AddMovementInput(RightVector, InputValue.X);
 }
 
-void AARCharacter::Look(const FInputActionValue& Value)
+void AARCharacter::OnLook(const FInputActionValue& Value)
 {
 	const FVector2D InputValue = Value.Get<FVector2D>();
 	AddControllerYawInput(InputValue.X);
 	AddControllerPitchInput(InputValue.Y);
 }
 
-void AARCharacter::PrimaryAttack(const FInputActionValue& Value)
+void AARCharacter::OnPrimaryAttack(const FInputActionValue& Value)
 {
 	const FVector SpawnLocation = GetMesh()->GetSocketLocation("Muzzle_01");
 	const FTransform SpawnTransform = FTransform(GetActorRotation(), SpawnLocation);
 	FActorSpawnParameters SpawnParameters;
 	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	GetWorld()->SpawnActor<AActor>(ProjectileClass, SpawnTransform, SpawnParameters);
+}
+
+void AARCharacter::OnJump(const FInputActionValue& Value)
+{
+	Jump();
 }
 
 // Called every frame
@@ -83,9 +88,10 @@ void AARCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 
 	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
 	{
-		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AARCharacter::Move);
-		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AARCharacter::Look);
-		EnhancedInputComponent->BindAction(PrimaryAttackAction, ETriggerEvent::Started, this, &AARCharacter::PrimaryAttack);
+		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AARCharacter::OnMove);
+		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AARCharacter::OnLook);
+		EnhancedInputComponent->BindAction(PrimaryAttackAction, ETriggerEvent::Started, this, &AARCharacter::OnPrimaryAttack);
+		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &AARCharacter::Jump);
 	}
 }
 

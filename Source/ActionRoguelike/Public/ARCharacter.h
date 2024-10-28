@@ -11,6 +11,7 @@ class UCameraComponent;
 class USpringArmComponent;
 class UInputMappingContext;
 class UInputAction;
+class UAnimMontage;
 struct FInputActionValue;
 
 UCLASS()
@@ -38,9 +39,12 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* InteractAction{nullptr};
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = Attack)
 	TSubclassOf<AActor> ProjectileClass;
-	
+
+	UPROPERTY(EditAnywhere, Category = Attack)
+	UAnimMontage* AttackAnimMontage;
+
 public:
 	// Sets default values for this character's properties
 	AARCharacter();
@@ -55,15 +59,17 @@ protected:
 
 	UPROPERTY(VisibleAnywhere)
 	UARInteractionComponent* InteractionComponent;
+
+	FTimerHandle TimerHandle_PrimaryAttack;
 	
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	
 	void OnMove(const FInputActionValue& Value);
 	void OnLook(const FInputActionValue& Value);
 	void OnPrimaryAttack(const FInputActionValue& Value);
 	void OnJump(const FInputActionValue& Value);
 	void OnInteract(const FInputActionValue& Value);
+	void PrimaryAttack_TimerElapsed();
 
 public:	
 	// Called every frame

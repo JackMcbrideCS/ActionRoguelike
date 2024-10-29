@@ -70,6 +70,16 @@ void AARCharacter::OnPrimaryAttack(const FInputActionValue& Value)
 	GetWorldTimerManager().SetTimer(TimerHandle_PrimaryAttack, this, &AARCharacter::PrimaryAttack_TimerElapsed, 0.2f);
 }
 
+void AARCharacter::PrimaryAttack_TimerElapsed()
+{
+	const FVector SpawnLocation = GetMesh()->GetSocketLocation("Muzzle_01");
+	const FTransform SpawnTransform = FTransform(GetActorRotation(), SpawnLocation);
+	FActorSpawnParameters SpawnParameters;
+	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	SpawnParameters.Instigator = this;
+	GetWorld()->SpawnActor<AActor>(ProjectileClass, SpawnTransform, SpawnParameters);
+}
+
 void AARCharacter::OnJump(const FInputActionValue& Value)
 {
 	Jump();
@@ -78,15 +88,6 @@ void AARCharacter::OnJump(const FInputActionValue& Value)
 void AARCharacter::OnInteract(const FInputActionValue& Value)
 {
 	InteractionComponent->PrimaryInteract();
-}
-
-void AARCharacter::PrimaryAttack_TimerElapsed()
-{
-	const FVector SpawnLocation = GetMesh()->GetSocketLocation("Muzzle_01");
-	const FTransform SpawnTransform = FTransform(GetActorRotation(), SpawnLocation);
-	FActorSpawnParameters SpawnParameters;
-	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-	GetWorld()->SpawnActor<AActor>(ProjectileClass, SpawnTransform, SpawnParameters);
 }
 
 // Called every frame

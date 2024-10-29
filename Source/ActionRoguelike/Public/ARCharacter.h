@@ -67,9 +67,9 @@ protected:
 	void OnMove(const FInputActionValue& Value);
 	void OnLook(const FInputActionValue& Value);
 	void OnPrimaryAttack(const FInputActionValue& Value);
+	void PrimaryAttack_TimerElapsed();
 	void OnJump(const FInputActionValue& Value);
 	void OnInteract(const FInputActionValue& Value);
-	void PrimaryAttack_TimerElapsed();
 
 public:	
 	// Called every frame

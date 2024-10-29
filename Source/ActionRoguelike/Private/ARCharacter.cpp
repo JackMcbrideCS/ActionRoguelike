@@ -67,7 +67,6 @@ void AARCharacter::OnLook(const FInputActionValue& Value)
 void AARCharacter::OnPrimaryAttack(const FInputActionValue& Value)
 {
 	PlayAnimMontage(AttackAnimMontage);
-
 	GetWorldTimerManager().SetTimer(TimerHandle_PrimaryAttack, this, &AARCharacter::PrimaryAttack_TimerElapsed, 0.2f);
 }
 
@@ -94,7 +93,39 @@ void AARCharacter::PrimaryAttack_TimerElapsed()
 	FActorSpawnParameters SpawnParameters;
 	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	SpawnParameters.Instigator = this;
-	GetWorld()->SpawnActor<AActor>(ProjectileClass, SpawnTransform, SpawnParameters);
+	GetWorld()->SpawnActor<AActor>(PrimaryAttackProjectileClass, SpawnTransform, SpawnParameters);
+}
+
+void AARCharacter::OnSecondaryAttack(const FInputActionValue& Value)
+{
+	PlayAnimMontage(AttackAnimMontage);
+	GetWorldTimerManager().SetTimer(TimerHandle_SecondaryAttack, this, &AARCharacter::SecondaryAttack_TimerElapsed, 0.2f);
+}
+
+void AARCharacter::SecondaryAttack_TimerElapsed()
+{
+	const bool bSocketExists = GetMesh()->DoesSocketExist(PrimaryAttackSocket);
+	if (!bSocketExists)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Primary Attack Socket does not exist [%s]."), *PrimaryAttackSocket.ToString())
+	}
+	
+	const FVector SpawnLocation = bSocketExists ? GetMesh()->GetSocketLocation(PrimaryAttackSocket) : GetActorLocation();
+
+	FHitResult Hit;
+	FCollisionObjectQueryParams ObjectQueryParams;
+	ObjectQueryParams.AddObjectTypesToQuery(ECC_WorldDynamic);
+	ObjectQueryParams.AddObjectTypesToQuery(ECC_WorldStatic);
+	const bool bBlockingHit = AimTrace(Hit, 1000.0f, ObjectQueryParams);
+	
+	const FVector LookAtPosition = bBlockingHit ? Hit.ImpactPoint : Hit.TraceEnd;
+	const FRotator SpawnRotation = UKismetMathLibrary::FindLookAtRotation(SpawnLocation, LookAtPosition);
+	const FTransform SpawnTransform = FTransform(SpawnRotation, SpawnLocation);
+
+	FActorSpawnParameters SpawnParameters;
+	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	SpawnParameters.Instigator = this;
+	GetWorld()->SpawnActor<AActor>(SecondaryAttackProjectileClass, SpawnTransform, SpawnParameters);
 }
 
 void AARCharacter::OnJump(const FInputActionValue& Value)
@@ -132,6 +163,7 @@ void AARCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AARCharacter::OnMove);
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AARCharacter::OnLook);
 		EnhancedInputComponent->BindAction(PrimaryAttackAction, ETriggerEvent::Started, this, &AARCharacter::OnPrimaryAttack);
+		EnhancedInputComponent->BindAction(SecondaryAttackAction, ETriggerEvent::Started, this, &AARCharacter::OnSecondaryAttack);
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &AARCharacter::Jump);
 		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Started, this, &AARCharacter::OnInteract);
 	}

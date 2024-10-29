@@ -3,26 +3,29 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "ARProjectileBase.h"
 #include "GameFramework/Actor.h"
-#include "ARMagicProjectile.generated.h"
+#include "ARProjectileBase.generated.h"
 
-class UParticleSystemComponent;
+class UProjectileMovementComponent;
+class USphereComponent;
 
 UCLASS()
-class ACTIONROGUELIKE_API AARMagicProjectile : public AARProjectileBase
+class ACTIONROGUELIKE_API AARProjectileBase : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
-	AARMagicProjectile();
+	AARProjectileBase();
 
 protected:
-	
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	UParticleSystemComponent* ParticleComponent;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	USphereComponent* SphereComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UProjectileMovementComponent* MovementComponent;
+	
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 

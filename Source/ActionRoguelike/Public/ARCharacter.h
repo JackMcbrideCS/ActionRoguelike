@@ -34,13 +34,19 @@ protected:
 	UInputAction* PrimaryAttackAction{nullptr};
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* SecondaryAttackAction{nullptr};
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* JumpAction{nullptr};
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* InteractAction{nullptr};
 
 	UPROPERTY(EditAnywhere, Category = Attack)
-	TSubclassOf<AActor> ProjectileClass;
+	TSubclassOf<AActor> PrimaryAttackProjectileClass;
+
+	UPROPERTY(EditAnywhere, Category = Attack)
+	TSubclassOf<AActor> SecondaryAttackProjectileClass;
 
 	UPROPERTY(EditAnywhere, Category = Attack)
 	UAnimMontage* AttackAnimMontage;
@@ -64,6 +70,7 @@ protected:
 	UARInteractionComponent* InteractionComponent;
 
 	FTimerHandle TimerHandle_PrimaryAttack;
+	FTimerHandle TimerHandle_SecondaryAttack;
 	
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -72,6 +79,8 @@ protected:
 	void OnLook(const FInputActionValue& Value);
 	void OnPrimaryAttack(const FInputActionValue& Value);
 	void PrimaryAttack_TimerElapsed();
+	void OnSecondaryAttack(const FInputActionValue& Value);
+	void SecondaryAttack_TimerElapsed();
 	void OnJump(const FInputActionValue& Value);
 	void OnInteract(const FInputActionValue& Value);
 

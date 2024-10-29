@@ -45,6 +45,9 @@ protected:
 	UPROPERTY(EditAnywhere, Category = Attack)
 	UAnimMontage* AttackAnimMontage;
 
+	UPROPERTY(EditAnywhere, Category = Attack)
+	FName PrimaryAttackSocket;
+
 public:
 	// Sets default values for this character's properties
 	AARCharacter();
@@ -64,12 +67,15 @@ protected:
 	
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	
 	void OnMove(const FInputActionValue& Value);
 	void OnLook(const FInputActionValue& Value);
 	void OnPrimaryAttack(const FInputActionValue& Value);
 	void PrimaryAttack_TimerElapsed();
 	void OnJump(const FInputActionValue& Value);
 	void OnInteract(const FInputActionValue& Value);
+
+	bool AimTrace(FHitResult& OutHit, float TraceLength, const FCollisionObjectQueryParams& ObjectQueryParams) const;
 
 public:	
 	// Called every frame

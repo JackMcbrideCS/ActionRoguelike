@@ -10,6 +10,7 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Kismet/KismetMathLibrary.h"
 
 // Sets default values
 AARCharacter::AARCharacter()
@@ -72,8 +73,24 @@ void AARCharacter::OnPrimaryAttack(const FInputActionValue& Value)
 
 void AARCharacter::PrimaryAttack_TimerElapsed()
 {
-	const FVector SpawnLocation = GetMesh()->GetSocketLocation("Muzzle_01");
-	const FTransform SpawnTransform = FTransform(GetControlRotation(), SpawnLocation);
+	const bool bSocketExists = GetMesh()->DoesSocketExist(PrimaryAttackSocket);
+	if (!bSocketExists)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Primary Attack Socket does not exist [%s]."), *PrimaryAttackSocket.ToString())
+	}
+	
+	const FVector SpawnLocation = bSocketExists ? GetMesh()->GetSocketLocation(PrimaryAttackSocket) : GetActorLocation();
+
+	FHitResult Hit;
+	FCollisionObjectQueryParams ObjectQueryParams;
+	ObjectQueryParams.AddObjectTypesToQuery(ECC_WorldDynamic);
+	ObjectQueryParams.AddObjectTypesToQuery(ECC_WorldStatic);
+	const bool bBlockingHit = AimTrace(Hit, 1000.0f, ObjectQueryParams);
+	
+	const FVector LookAtPosition = bBlockingHit ? Hit.ImpactPoint : Hit.TraceEnd;
+	const FRotator SpawnRotation = UKismetMathLibrary::FindLookAtRotation(SpawnLocation, LookAtPosition);
+	const FTransform SpawnTransform = FTransform(SpawnRotation, SpawnLocation);
+
 	FActorSpawnParameters SpawnParameters;
 	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	SpawnParameters.Instigator = this;
@@ -88,6 +105,14 @@ void AARCharacter::OnJump(const FInputActionValue& Value)
 void AARCharacter::OnInteract(const FInputActionValue& Value)
 {
 	InteractionComponent->PrimaryInteract();
+}
+
+bool AARCharacter::AimTrace(FHitResult& OutHit, const float TraceLength, const FCollisionObjectQueryParams& ObjectQueryParams) const
+{
+	const FVector TraceStart = CameraComponent->GetComponentLocation();
+	const FVector TraceDirection = CameraComponent->GetComponentRotation().Vector() * 1000.0f;
+	const FVector TraceEnd = TraceStart + TraceDirection * TraceLength;
+	return GetWorld()->LineTraceSingleByObjectType(OutHit, TraceStart, TraceEnd, ObjectQueryParams);
 }
 
 // Called every frame

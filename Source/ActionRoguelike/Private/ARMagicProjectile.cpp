@@ -30,7 +30,16 @@ AARMagicProjectile::AARMagicProjectile()
 void AARMagicProjectile::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	if (GetInstigator())
+	{
+		SphereComponent->IgnoreActorWhenMoving(GetInstigator(), true);
+		GetInstigator()->MoveIgnoreActorAdd(this);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Projectile %s does not have an Instigator."), *GetNameSafe(this));
+	}
 }
 
 // Called every frame

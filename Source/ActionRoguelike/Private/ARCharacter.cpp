@@ -73,7 +73,7 @@ void AARCharacter::OnPrimaryAttack(const FInputActionValue& Value)
 void AARCharacter::PrimaryAttack_TimerElapsed()
 {
 	const FVector SpawnLocation = GetMesh()->GetSocketLocation("Muzzle_01");
-	const FTransform SpawnTransform = FTransform(GetActorRotation(), SpawnLocation);
+	const FTransform SpawnTransform = FTransform(GetControlRotation(), SpawnLocation);
 	FActorSpawnParameters SpawnParameters;
 	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	SpawnParameters.Instigator = this;

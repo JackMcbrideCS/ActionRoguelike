@@ -21,10 +21,10 @@ public:
 	virtual void BeginPlay() override;
 
 protected:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components)
 	UParticleSystemComponent* ParticleComponent;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components)
 	URadialForceComponent* ForceComponent;
 
 	UFUNCTION()

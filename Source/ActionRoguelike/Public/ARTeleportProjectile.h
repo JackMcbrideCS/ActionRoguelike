@@ -16,7 +16,7 @@ public:
 	UPROPERTY(EditAnywhere)
 	float TeleportDelay;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(VisibleAnywhere, Category = Components)
 	UParticleSystem* ExplosionParticle;
 	
 	// Sets default values for this actor's properties

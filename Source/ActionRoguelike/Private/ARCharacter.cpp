@@ -3,6 +3,7 @@
 
 #include "ARCharacter.h"
 
+#include "ARAttributeComponent.h"
 #include "ARInteractionComponent.h"
 #include "DrawDebugHelpers.h"
 #include "EnhancedInputComponent.h"
@@ -26,6 +27,7 @@ AARCharacter::AARCharacter()
 	CameraComponent->SetupAttachment(SpringArmComponent);
 
 	InteractionComponent = CreateDefaultSubobject<UARInteractionComponent>("Interaction Component");
+	AttributeComponent = CreateDefaultSubobject<UARAttributeComponent>("Attribute Component");
 
 	bUseControllerRotationYaw = false;
 	GetCharacterMovement()->bOrientRotationToMovement = true;

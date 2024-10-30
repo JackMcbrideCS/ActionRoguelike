@@ -18,10 +18,10 @@ public:
 	AARExplosiveBarrel();
 
 protected:
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, Category = Components)
 	UStaticMeshComponent* StaticMeshComponent;
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, Category = Components)
 	URadialForceComponent* RadialForceComponent;
 	
 	// Called when the game starts or when spawned

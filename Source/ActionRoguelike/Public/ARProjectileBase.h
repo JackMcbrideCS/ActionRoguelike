@@ -16,7 +16,7 @@ class ACTIONROGUELIKE_API AARProjectileBase : public AActor
 	
 public:	
 	UPROPERTY(EditAnywhere)
-	float Lifetime;
+	float TravelTime;
 	
 	// Sets default values for this actor's properties
 	AARProjectileBase();
@@ -29,12 +29,12 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UProjectileMovementComponent* MovementComponent;
 
-	FTimerHandle TimerHandle_Lifetime;
+	FTimerHandle TimerHandle_TravelTime;
 	
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	virtual void Lifetime_TimerElapsed();
+	virtual void TravelTime_TimerElapsed();
 
 public:	
 	// Called every frame

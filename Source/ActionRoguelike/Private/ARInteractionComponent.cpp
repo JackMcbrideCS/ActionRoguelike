@@ -3,26 +3,25 @@
 
 #include "ARInteractionComponent.h"
 
+#include "ARCharacter.h"
 #include "ARGameplayInterface.h"
 #include "KismetTraceUtils.h"
 
 void UARInteractionComponent::PrimaryInteract()
 {
+	AARCharacter* OwnerCharacter = Cast<AARCharacter>(GetOwner());
+	if (!OwnerCharacter)
+	{
+		return;
+	}
+	
+	TArray<FHitResult> Hits;
 	FCollisionObjectQueryParams ObjectQueryParams;
 	ObjectQueryParams.AddObjectTypesToQuery(ECC_WorldDynamic);
-	FVector EyeLocation;
-	FRotator EyeRotation;
-	GetOwner()->GetActorEyesViewPoint(EyeLocation, EyeRotation);
-	
-	const FVector End = EyeLocation + EyeRotation.Vector() * 1000.0f;
-
-	TArray<FHitResult> Hits;
 	FCollisionShape CollisionShape;
 	const float Radius = 30.0f;
 	CollisionShape.SetSphere(Radius);
-
-	const bool bBlockingHit = GetWorld()->SweepMultiByObjectType(Hits, EyeLocation, End, FQuat::Identity, ObjectQueryParams, CollisionShape);
-	DrawDebugSweptSphere(GetWorld(), EyeLocation, End, Radius, bBlockingHit ? FColor::Green : FColor::Red, false, 2.0f, 0);
+	OwnerCharacter->AimSweep(Hits, 1000.0f, ObjectQueryParams, CollisionShape);
 	
 	for(const FHitResult& Hit: Hits)
 	{

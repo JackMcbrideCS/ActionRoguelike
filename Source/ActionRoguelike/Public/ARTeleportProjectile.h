@@ -30,7 +30,7 @@ protected:
 
 	FTimerHandle TimerHandle_TeleportDelay;
 
-	void Lifetime_TimerElapsed() override;
+	virtual void TravelTime_TimerElapsed() override;
 	void TravelEnded();
 	void Teleport();
 

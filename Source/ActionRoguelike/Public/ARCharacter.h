@@ -19,6 +19,11 @@ class ACTIONROGUELIKE_API AARCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
+public:
+	
+	bool AimTrace(FHitResult& OutHit, const float TraceLength, const FCollisionObjectQueryParams& ObjectQueryParams) const;
+	bool AimSweep(TArray<FHitResult>& OutHits, const float TraceLength, const FCollisionObjectQueryParams& ObjectQueryParams, const FCollisionShape& CollisionShape) const;
+	
 protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
@@ -92,8 +97,6 @@ protected:
 	void OnInteract(const FInputActionValue& Value);
 	void OnDodge(const FInputActionValue& Value);
 	void Dodge_TimerElapsed();
-
-	bool AimTrace(FHitResult& OutHit, float TraceLength, const FCollisionObjectQueryParams& ObjectQueryParams) const;
 
 public:	
 	// Called every frame

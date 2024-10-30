@@ -26,15 +26,14 @@ void AARTeleportProjectile::BeginPlay()
 	SphereComponent->OnComponentHit.AddDynamic(this, &AARTeleportProjectile::OnHit);
 }
 
-void AARTeleportProjectile::Lifetime_TimerElapsed()
+void AARTeleportProjectile::TravelTime_TimerElapsed()
 {
-	Super::Lifetime_TimerElapsed();
 	TravelEnded();
 }
 
 void AARTeleportProjectile::TravelEnded()
 {
-	GetWorldTimerManager().ClearTimer(TimerHandle_Lifetime);
+	GetWorldTimerManager().ClearTimer(TimerHandle_TravelTime);
 	MovementComponent->StopMovementImmediately();
 	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ExplosionParticle, GetTransform());
 	ParticleComponent->Deactivate();

@@ -37,14 +37,15 @@ void AARProjectileBase::BeginPlay()
 		UE_LOG(LogTemp, Warning, TEXT("Projectile %s does not have an Instigator."), *GetNameSafe(this));
 	}
 
-	if (Lifetime > 0.0f)
+	if (TravelTime > 0.0f)
 	{
-		GetWorldTimerManager().SetTimer(TimerHandle_Lifetime, this, &AARProjectileBase::Lifetime_TimerElapsed, Lifetime);
+		GetWorldTimerManager().SetTimer(TimerHandle_TravelTime, this, &AARProjectileBase::TravelTime_TimerElapsed, TravelTime);
 	}
 }
 
-void AARProjectileBase::Lifetime_TimerElapsed()
+void AARProjectileBase::TravelTime_TimerElapsed()
 {
+	MovementComponent->StopMovementImmediately();
 }
 
 // Called every frame

@@ -49,7 +49,9 @@ void AARCharacter::BeginPlay()
 void AARCharacter::OnMove(const FInputActionValue& Value)
 {
 	const FVector2D InputValue = Value.Get<FVector2D>();
-	const FRotator ControlRotation = Controller->GetControlRotation();
+	FRotator ControlRotation = Controller->GetControlRotation();
+	ControlRotation.Pitch = 0.0f;
+	ControlRotation.Roll = 0.0f;
 	const FVector ForwardVector = FRotationMatrix(ControlRotation).GetUnitAxis(EAxis::X);
 	const FVector RightVector = FRotationMatrix(ControlRotation).GetUnitAxis(EAxis::Y);
 	
@@ -176,6 +178,15 @@ bool AARCharacter::AimTrace(FHitResult& OutHit, const float TraceLength, const F
 	const FVector TraceDirection = CameraComponent->GetComponentRotation().Vector() * 1000.0f;
 	const FVector TraceEnd = TraceStart + TraceDirection * TraceLength;
 	return GetWorld()->LineTraceSingleByObjectType(OutHit, TraceStart, TraceEnd, ObjectQueryParams);
+}
+
+bool AARCharacter::AimSweep(TArray<FHitResult>& OutHits, const float TraceLength,
+	const FCollisionObjectQueryParams& ObjectQueryParams, const FCollisionShape& CollisionShape) const
+{
+	const FVector TraceStart = CameraComponent->GetComponentLocation();
+	const FVector TraceDirection = CameraComponent->GetComponentRotation().Vector() * 1000.0f;
+	const FVector TraceEnd = TraceStart + TraceDirection * TraceLength;
+	return GetWorld()->SweepMultiByObjectType(OutHits, TraceStart, TraceEnd, FQuat::Identity, ObjectQueryParams, CollisionShape);
 }
 
 // Called every frame

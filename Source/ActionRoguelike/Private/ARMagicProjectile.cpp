@@ -22,6 +22,12 @@ void AARMagicProjectile::BeginPlay()
 	Super::BeginPlay();
 }
 
+void AARMagicProjectile::TravelTime_TimerElapsed()
+{
+	Super::TravelTime_TimerElapsed();
+	Destroy();
+}
+
 // Called every frame
 void AARMagicProjectile::Tick(float DeltaTime)
 {

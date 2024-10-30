@@ -138,6 +138,38 @@ void AARCharacter::OnInteract(const FInputActionValue& Value)
 	InteractionComponent->PrimaryInteract();
 }
 
+void AARCharacter::OnDodge(const FInputActionValue& Value)
+{
+	PlayAnimMontage(AttackAnimMontage);
+	GetWorldTimerManager().SetTimer(TimerHandle_Dodge, this, &AARCharacter::Dodge_TimerElapsed, 0.2f);
+}
+
+void AARCharacter::Dodge_TimerElapsed()
+{
+	const bool bSocketExists = GetMesh()->DoesSocketExist(PrimaryAttackSocket);
+	if (!bSocketExists)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Primary Attack Socket does not exist [%s]."), *PrimaryAttackSocket.ToString())
+	}
+	
+	const FVector SpawnLocation = bSocketExists ? GetMesh()->GetSocketLocation(PrimaryAttackSocket) : GetActorLocation();
+
+	FHitResult Hit;
+	FCollisionObjectQueryParams ObjectQueryParams;
+	ObjectQueryParams.AddObjectTypesToQuery(ECC_WorldDynamic);
+	ObjectQueryParams.AddObjectTypesToQuery(ECC_WorldStatic);
+	const bool bBlockingHit = AimTrace(Hit, 1000.0f, ObjectQueryParams);
+	
+	const FVector LookAtPosition = bBlockingHit ? Hit.ImpactPoint : Hit.TraceEnd;
+	const FRotator SpawnRotation = UKismetMathLibrary::FindLookAtRotation(SpawnLocation, LookAtPosition);
+	const FTransform SpawnTransform = FTransform(SpawnRotation, SpawnLocation);
+
+	FActorSpawnParameters SpawnParameters;
+	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	SpawnParameters.Instigator = this;
+	GetWorld()->SpawnActor<AActor>(DodgeProjectileClass, SpawnTransform, SpawnParameters);
+}
+
 bool AARCharacter::AimTrace(FHitResult& OutHit, const float TraceLength, const FCollisionObjectQueryParams& ObjectQueryParams) const
 {
 	const FVector TraceStart = CameraComponent->GetComponentLocation();
@@ -166,6 +198,7 @@ void AARCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 		EnhancedInputComponent->BindAction(SecondaryAttackAction, ETriggerEvent::Started, this, &AARCharacter::OnSecondaryAttack);
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &AARCharacter::Jump);
 		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Started, this, &AARCharacter::OnInteract);
+		EnhancedInputComponent->BindAction(DodgeAction, ETriggerEvent::Started, this, &AARCharacter::OnDodge);
 	}
 }
 

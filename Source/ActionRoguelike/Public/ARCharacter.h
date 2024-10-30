@@ -41,12 +41,18 @@ protected:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* InteractAction{nullptr};
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* DodgeAction{nullptr};
 
 	UPROPERTY(EditAnywhere, Category = Attack)
 	TSubclassOf<AActor> PrimaryAttackProjectileClass;
 
 	UPROPERTY(EditAnywhere, Category = Attack)
 	TSubclassOf<AActor> SecondaryAttackProjectileClass;
+
+	UPROPERTY(EditAnywhere, Category = Attack)
+	TSubclassOf<AActor> DodgeProjectileClass;
 
 	UPROPERTY(EditAnywhere, Category = Attack)
 	UAnimMontage* AttackAnimMontage;
@@ -71,6 +77,7 @@ protected:
 
 	FTimerHandle TimerHandle_PrimaryAttack;
 	FTimerHandle TimerHandle_SecondaryAttack;
+	FTimerHandle TimerHandle_Dodge;
 	
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -83,6 +90,8 @@ protected:
 	void SecondaryAttack_TimerElapsed();
 	void OnJump(const FInputActionValue& Value);
 	void OnInteract(const FInputActionValue& Value);
+	void OnDodge(const FInputActionValue& Value);
+	void Dodge_TimerElapsed();
 
 	bool AimTrace(FHitResult& OutHit, float TraceLength, const FCollisionObjectQueryParams& ObjectQueryParams) const;
 

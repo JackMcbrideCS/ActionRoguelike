@@ -8,6 +8,7 @@
 
 class UProjectileMovementComponent;
 class USphereComponent;
+class UParticleSystem;
 
 UCLASS()
 class ACTIONROGUELIKE_API AARProjectileBase : public AActor
@@ -28,6 +29,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components)
 	UProjectileMovementComponent* MovementComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UParticleSystem* HitParticle;
 
 	FTimerHandle TimerHandle_TravelTime;
 	

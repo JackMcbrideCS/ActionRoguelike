@@ -35,7 +35,7 @@ void AARTeleportProjectile::TravelEnded()
 {
 	GetWorldTimerManager().ClearTimer(TimerHandle_TravelTime);
 	MovementComponent->StopMovementImmediately();
-	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ExplosionParticle, GetTransform());
+	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitParticle, GetTransform());
 	ParticleComponent->Deactivate();
 	if (TeleportDelay <= 0.0f)
 	{

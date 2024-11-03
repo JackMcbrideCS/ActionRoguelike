@@ -18,7 +18,7 @@ AARTargetDummy::AARTargetDummy()
 void AARTargetDummy::OnHealthChanged(AActor* InstigatorActor, UARAttributeComponent* OwningComponent, float NewHealth,
 	float Delta)
 {
-	if (NewHealth >= 0)
+	if (Delta >= 0)
 	{
 		return;
 	}

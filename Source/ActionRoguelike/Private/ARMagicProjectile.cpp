@@ -5,6 +5,7 @@
 
 #include "ARAttributeComponent.h"
 #include "Components/SphereComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "Particles/ParticleSystemComponent.h"
 
 // Sets default values
@@ -46,6 +47,7 @@ void AARMagicProjectile::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent
 	}
 
 	AttributeComponent->ApplyHealthChange(-20.0f);
+	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitParticle, GetTransform());
 	Destroy();
 }
 

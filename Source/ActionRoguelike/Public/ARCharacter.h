@@ -102,6 +102,9 @@ protected:
 	void OnDodge(const FInputActionValue& Value);
 	void Dodge_TimerElapsed();
 
+	UFUNCTION()
+	void OnHealthChanged(AActor* InstigatorActor, UARAttributeComponent* OwningComponent, float NewHealth, float Delta);
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

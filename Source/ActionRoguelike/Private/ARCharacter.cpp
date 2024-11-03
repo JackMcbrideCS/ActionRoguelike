@@ -52,6 +52,7 @@ void AARCharacter::BeginPlay()
 	}
 
 	Subsystem->AddMappingContext(DefaultMappingContext, 0);
+	AttributeComponent->OnHealthChanged.AddDynamic(this, &AARCharacter::OnHealthChanged);
 }
 
 void AARCharacter::OnMove(const FInputActionValue& Value)
@@ -181,6 +182,16 @@ void AARCharacter::Dodge_TimerElapsed()
 	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	SpawnParameters.Instigator = this;
 	GetWorld()->SpawnActor<AActor>(DodgeProjectileClass, SpawnTransform, SpawnParameters);
+}
+
+void AARCharacter::OnHealthChanged(AActor* InstigatorActor, UARAttributeComponent* OwningComponent, float NewHealth,
+	float Delta)
+{
+	if (NewHealth <= 0.0f && Delta < 0.0f)
+	{
+		APlayerController* PlayerController = Cast<APlayerController>(GetController());
+		DisableInput(PlayerController);
+	}
 }
 
 bool AARCharacter::AimTrace(FHitResult& OutHit, const float TraceLength, const FCollisionObjectQueryParams& ObjectQueryParams) const

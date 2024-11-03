@@ -3,10 +3,10 @@
 
 #include "ARTeleportProjectile.h"
 
-#include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Particles/ParticleSystemComponent.h"
+#include "Sound/SoundCue.h"
 
 // Sets default values
 AARTeleportProjectile::AARTeleportProjectile()
@@ -34,6 +34,7 @@ void AARTeleportProjectile::Teleport()
 void AARTeleportProjectile::Explode_Implementation()
 {
 	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitParticle, GetTransform());
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), HitSoundCue, GetActorLocation());
 	GetWorldTimerManager().ClearTimer(TimerHandle_TravelTime);
 	MovementComponent->StopMovementImmediately();
 	ParticleComponent->DeactivateSystem();

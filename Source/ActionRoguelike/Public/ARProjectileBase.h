@@ -33,8 +33,14 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components)
 	UParticleSystemComponent* ParticleComponent;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components)
+	UAudioComponent* AudioComponent;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UParticleSystem* HitParticle;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	USoundCue* HitSoundCue;
 
 	FTimerHandle TimerHandle_TravelTime;
 	

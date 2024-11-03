@@ -3,10 +3,12 @@
 
 #include "ARProjectileBase.h"
 
+#include "Components/AudioComponent.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Particles/ParticleSystemComponent.h"
+#include "Sound/SoundCue.h"
 
 // Sets default values
 AARProjectileBase::AARProjectileBase()
@@ -25,6 +27,8 @@ AARProjectileBase::AARProjectileBase()
 	MovementComponent->InitialSpeed = 1000.0f;
 	MovementComponent->bRotationFollowsVelocity = true;
 	MovementComponent->bInitialVelocityInLocalSpace = true;
+
+	AudioComponent = CreateDefaultSubobject<UAudioComponent>("Audio Component");
 }
 
 // Called when the game starts or when spawned
@@ -71,6 +75,7 @@ void AARProjectileBase::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherAc
 void AARProjectileBase::Explode_Implementation()
 {
 	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitParticle, GetTransform());
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), HitSoundCue, GetActorLocation());
 	Destroy();
 }
 

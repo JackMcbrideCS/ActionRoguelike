@@ -4,6 +4,11 @@
 #include "ARItemChest.h"
 
 
+bool AARItemChest::CanInteract_Implementation(APawn* InstigatorPawn) const
+{
+	return true;
+}
+
 void AARItemChest::Interact_Implementation(APawn* InstigatorPawn)
 {
 	LidMesh->SetRelativeRotation(FRotator(TargetPitch, 0, 0));

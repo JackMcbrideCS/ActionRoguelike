@@ -35,5 +35,11 @@ public:
 	bool ApplyHealthChange(float Delta);
 
 	UFUNCTION(BlueprintCallable)
-	bool IsAlive() const;		
+	bool IsAlive() const;
+
+	UFUNCTION(BlueprintCallable)
+	float GetMaxHealth() const;
+
+	UFUNCTION(BlueprintCallable)
+	float GetHealth() const;
 };

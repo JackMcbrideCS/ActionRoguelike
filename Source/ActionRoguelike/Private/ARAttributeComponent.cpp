@@ -39,3 +39,13 @@ bool UARAttributeComponent::IsAlive() const
 	return Health > 0.0f;
 }
 
+float UARAttributeComponent::GetMaxHealth() const
+{
+	return MaxHealth;
+}
+
+float UARAttributeComponent::GetHealth() const
+{
+	return Health;
+}
+

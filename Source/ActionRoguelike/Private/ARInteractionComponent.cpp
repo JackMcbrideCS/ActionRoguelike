@@ -37,6 +37,11 @@ void UARInteractionComponent::PrimaryInteract()
 		}
 
 		APawn* MyPawn = Cast<APawn>(GetOwner());
+		if(!IARGameplayInterface::Execute_CanInteract(HitActor, MyPawn))
+		{
+			return;
+		}
+		
 		IARGameplayInterface::Execute_Interact(HitActor, MyPawn);
 		return;
 	}

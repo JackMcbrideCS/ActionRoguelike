@@ -12,7 +12,8 @@ class ACTIONROGUELIKE_API AARItemChest : public AActor, public IARGameplayInterf
 {
 	GENERATED_BODY()
 
-	void Interact_Implementation(APawn* InstigatorPawn);
+	virtual bool CanInteract_Implementation(APawn* InstigatorPawn) const override;
+	virtual void Interact_Implementation(APawn* InstigatorPawn) override;
 
 public:
 	UPROPERTY(EditAnywhere)

@@ -10,12 +10,20 @@ UARAttributeComponent::UARAttributeComponent()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 
-	Health = 100.0f;
+	MaxHealth = 100.0f;
+	Health = MaxHealth;
 }
 
 bool UARAttributeComponent::ApplyHealthChange(float Delta)
 {
-	Health += Delta;
+	const float OldHealth = Health;
+	Health = FMath::Clamp(Health + Delta, 0.0f, MaxHealth);
+	Delta = Health - OldHealth;
+	if (Delta == 0.0f)
+	{
+		return false;
+	}
+	
 	OnHealthChanged.Broadcast(nullptr, this, Health, Delta);
 	return true;
 }

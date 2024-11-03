@@ -187,7 +187,13 @@ void AARCharacter::Dodge_TimerElapsed()
 void AARCharacter::OnHealthChanged(AActor* InstigatorActor, UARAttributeComponent* OwningComponent, float NewHealth,
 	float Delta)
 {
-	if (NewHealth <= 0.0f && Delta < 0.0f)
+	if (Delta >= 0)
+	{
+		return;
+	}
+	
+	GetMesh()->SetScalarParameterValueOnMaterials(TEXT("HitTime"), GetWorld()->GetTimeSeconds());
+	if (NewHealth <= 0.0f)
 	{
 		APlayerController* PlayerController = Cast<APlayerController>(GetController());
 		DisableInput(PlayerController);

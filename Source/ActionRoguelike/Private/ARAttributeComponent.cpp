@@ -14,6 +14,12 @@ UARAttributeComponent::UARAttributeComponent()
 	Health = MaxHealth;
 }
 
+void UARAttributeComponent::BeginPlay()
+{
+	Super::BeginPlay();
+	Health = MaxHealth;
+}
+
 bool UARAttributeComponent::ApplyHealthChange(float Delta)
 {
 	const float OldHealth = Health;

@@ -16,6 +16,7 @@ class ACTIONROGUELIKE_API UARAttributeComponent : public UActorComponent
 public:	
 	// Sets default values for this component's properties
 	UARAttributeComponent();
+	virtual void BeginPlay() override;
 
 protected:
 

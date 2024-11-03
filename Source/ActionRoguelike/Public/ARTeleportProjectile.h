@@ -18,19 +18,11 @@ public:
 	
 	// Sets default values for this actor's properties
 	AARTeleportProjectile();
-	UFUNCTION()
-	virtual void BeginPlay() override;
 
 protected:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	UParticleSystemComponent* ParticleComponent;
-
 	FTimerHandle TimerHandle_TeleportDelay;
 
 	virtual void TravelTime_TimerElapsed() override;
-	void TravelEnded();
 	void Teleport();
-
-	UFUNCTION()
-	void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+	virtual void Explode_Implementation() override;
 };

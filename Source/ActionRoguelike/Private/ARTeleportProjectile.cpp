@@ -13,43 +13,16 @@ AARTeleportProjectile::AARTeleportProjectile()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	
-	ParticleComponent = CreateDefaultSubobject<UParticleSystemComponent>("Particle Component");
-	ParticleComponent->SetupAttachment(SphereComponent);
-}
-
-// Called when the game starts or when spawned
-void AARTeleportProjectile::BeginPlay()
-{
-	Super::BeginPlay();
-
-	SphereComponent->OnComponentHit.AddDynamic(this, &AARTeleportProjectile::OnHit);
 }
 
 void AARTeleportProjectile::TravelTime_TimerElapsed()
 {
-	TravelEnded();
-}
-
-void AARTeleportProjectile::TravelEnded()
-{
-	GetWorldTimerManager().ClearTimer(TimerHandle_TravelTime);
-	MovementComponent->StopMovementImmediately();
-	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitParticle, GetTransform());
-	ParticleComponent->Deactivate();
-	if (TeleportDelay <= 0.0f)
-	{
-		Teleport();
-	}
-	else
-	{
-		GetWorldTimerManager().SetTimer(TimerHandle_TeleportDelay, this, &AARTeleportProjectile::Teleport, TeleportDelay);
-	}
+	Explode();
 }
 
 void AARTeleportProjectile::Teleport()
 {
-	if (!GetInstigator())
+	if (!ensure(GetInstigator()))
 	{
 		return;
 	}
@@ -58,8 +31,19 @@ void AARTeleportProjectile::Teleport()
 	Destroy();
 }
 
-void AARTeleportProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
-	FVector NormalImpulse, const FHitResult& Hit)
+void AARTeleportProjectile::Explode_Implementation()
 {
-	TravelEnded();
+	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitParticle, GetTransform());
+	GetWorldTimerManager().ClearTimer(TimerHandle_TravelTime);
+	MovementComponent->StopMovementImmediately();
+	ParticleComponent->DeactivateSystem();
+	SetActorEnableCollision(false);
+	if (TeleportDelay <= 0.0f)
+	{
+		Teleport();
+	}
+	else
+	{
+		GetWorldTimerManager().SetTimer(TimerHandle_TeleportDelay, this, &AARTeleportProjectile::Teleport, TeleportDelay);
+	}
 }

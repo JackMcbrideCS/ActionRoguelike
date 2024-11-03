@@ -5,6 +5,8 @@
 
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "Particles/ParticleSystemComponent.h"
 
 // Sets default values
 AARProjectileBase::AARProjectileBase()
@@ -15,6 +17,9 @@ AARProjectileBase::AARProjectileBase()
 	SphereComponent = CreateDefaultSubobject<USphereComponent>("Sphere Component");
 	SphereComponent->SetCollisionProfileName("Projectile");
 	RootComponent = SphereComponent;
+
+	ParticleComponent = CreateDefaultSubobject<UParticleSystemComponent>("Particle Component");
+	ParticleComponent->SetupAttachment(SphereComponent);
 	
 	MovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>("Movement Component");
 	MovementComponent->InitialSpeed = 1000.0f;
@@ -41,11 +46,32 @@ void AARProjectileBase::BeginPlay()
 	{
 		GetWorldTimerManager().SetTimer(TimerHandle_TravelTime, this, &AARProjectileBase::TravelTime_TimerElapsed, TravelTime);
 	}
+
+	SphereComponent->OnComponentBeginOverlap.AddDynamic(this, &AARProjectileBase::OnBeginOverlap);
+	SphereComponent->OnComponentHit.AddDynamic(this, &AARProjectileBase::OnHit);
 }
 
 void AARProjectileBase::TravelTime_TimerElapsed()
 {
 	MovementComponent->StopMovementImmediately();
+}
+
+void AARProjectileBase::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	Explode();
+}
+
+void AARProjectileBase::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+	FVector NormalImpulse, const FHitResult& Hit)
+{
+	Explode();
+}
+
+void AARProjectileBase::Explode_Implementation()
+{
+	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitParticle, GetTransform());
+	Destroy();
 }
 
 // Called every frame

@@ -19,16 +19,10 @@ public:
 	AARMagicProjectile();
 
 protected:
-	
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components)
-	UParticleSystemComponent* ParticleComponent;
-
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	virtual void TravelTime_TimerElapsed() override;
-
-	UFUNCTION()
-	void OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	virtual void OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) override;
 
 public:	
 	// Called every frame

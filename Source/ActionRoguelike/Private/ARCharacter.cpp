@@ -38,14 +38,20 @@ void AARCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (const APlayerController* PlayerController = Cast<APlayerController>(Controller))
+	const APlayerController* PlayerController = Cast<APlayerController>(Controller);
+	if (!ensure(PlayerController))
 	{
-		const ULocalPlayer* LocalPlayer = PlayerController->GetLocalPlayer();
-		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(LocalPlayer))
-		{
-			Subsystem->AddMappingContext(DefaultMappingContext, 0);
-		}
-	}	
+		return;
+	}
+	
+	const ULocalPlayer* LocalPlayer = PlayerController->GetLocalPlayer();
+	UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(LocalPlayer);
+	if (!ensure(Subsystem))
+	{
+		return;
+	}
+
+	Subsystem->AddMappingContext(DefaultMappingContext, 0);
 }
 
 void AARCharacter::OnMove(const FInputActionValue& Value)
@@ -77,17 +83,18 @@ void AARCharacter::OnPrimaryAttack(const FInputActionValue& Value)
 void AARCharacter::PrimaryAttack_TimerElapsed()
 {
 	const bool bSocketExists = GetMesh()->DoesSocketExist(PrimaryAttackSocket);
-	if (!bSocketExists)
+	if (!ensure(bSocketExists))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Primary Attack Socket does not exist [%s]."), *PrimaryAttackSocket.ToString())
+		return;
 	}
 	
-	const FVector SpawnLocation = bSocketExists ? GetMesh()->GetSocketLocation(PrimaryAttackSocket) : GetActorLocation();
-
+	const FVector SpawnLocation = GetMesh()->GetSocketLocation(PrimaryAttackSocket);
+	
 	FHitResult Hit;
 	FCollisionObjectQueryParams ObjectQueryParams;
 	ObjectQueryParams.AddObjectTypesToQuery(ECC_WorldDynamic);
 	ObjectQueryParams.AddObjectTypesToQuery(ECC_WorldStatic);
+	ObjectQueryParams.AddObjectTypesToQuery(ECC_Pawn);
 	const bool bBlockingHit = AimTrace(Hit, 1000.0f, ObjectQueryParams);
 	
 	const FVector LookAtPosition = bBlockingHit ? Hit.ImpactPoint : Hit.TraceEnd;
@@ -109,17 +116,18 @@ void AARCharacter::OnSecondaryAttack(const FInputActionValue& Value)
 void AARCharacter::SecondaryAttack_TimerElapsed()
 {
 	const bool bSocketExists = GetMesh()->DoesSocketExist(PrimaryAttackSocket);
-	if (!bSocketExists)
+	if (!ensure(bSocketExists))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Primary Attack Socket does not exist [%s]."), *PrimaryAttackSocket.ToString())
+		return;
 	}
 	
-	const FVector SpawnLocation = bSocketExists ? GetMesh()->GetSocketLocation(PrimaryAttackSocket) : GetActorLocation();
+	const FVector SpawnLocation = GetMesh()->GetSocketLocation(PrimaryAttackSocket);
 
 	FHitResult Hit;
 	FCollisionObjectQueryParams ObjectQueryParams;
 	ObjectQueryParams.AddObjectTypesToQuery(ECC_WorldDynamic);
 	ObjectQueryParams.AddObjectTypesToQuery(ECC_WorldStatic);
+	ObjectQueryParams.AddObjectTypesToQuery(ECC_Pawn);
 	const bool bBlockingHit = AimTrace(Hit, 1000.0f, ObjectQueryParams);
 	
 	const FVector LookAtPosition = bBlockingHit ? Hit.ImpactPoint : Hit.TraceEnd;
@@ -151,17 +159,18 @@ void AARCharacter::OnDodge(const FInputActionValue& Value)
 void AARCharacter::Dodge_TimerElapsed()
 {
 	const bool bSocketExists = GetMesh()->DoesSocketExist(PrimaryAttackSocket);
-	if (!bSocketExists)
+	if (!ensure(bSocketExists))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Primary Attack Socket does not exist [%s]."), *PrimaryAttackSocket.ToString())
+		return;
 	}
 	
-	const FVector SpawnLocation = bSocketExists ? GetMesh()->GetSocketLocation(PrimaryAttackSocket) : GetActorLocation();
+	const FVector SpawnLocation = GetMesh()->GetSocketLocation(PrimaryAttackSocket);
 
 	FHitResult Hit;
 	FCollisionObjectQueryParams ObjectQueryParams;
 	ObjectQueryParams.AddObjectTypesToQuery(ECC_WorldDynamic);
 	ObjectQueryParams.AddObjectTypesToQuery(ECC_WorldStatic);
+	ObjectQueryParams.AddObjectTypesToQuery(ECC_Pawn);
 	const bool bBlockingHit = AimTrace(Hit, 1000.0f, ObjectQueryParams);
 	
 	const FVector LookAtPosition = bBlockingHit ? Hit.ImpactPoint : Hit.TraceEnd;
@@ -203,16 +212,19 @@ void AARCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
+	UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent);
+	if (!ensure(EnhancedInputComponent))
 	{
-		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AARCharacter::OnMove);
-		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AARCharacter::OnLook);
-		EnhancedInputComponent->BindAction(PrimaryAttackAction, ETriggerEvent::Started, this, &AARCharacter::OnPrimaryAttack);
-		EnhancedInputComponent->BindAction(SecondaryAttackAction, ETriggerEvent::Started, this, &AARCharacter::OnSecondaryAttack);
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &AARCharacter::Jump);
-		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Started, this, &AARCharacter::OnInteract);
-		EnhancedInputComponent->BindAction(DodgeAction, ETriggerEvent::Started, this, &AARCharacter::OnDodge);
+		return;
 	}
+
+	EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AARCharacter::OnMove);
+	EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AARCharacter::OnLook);
+	EnhancedInputComponent->BindAction(PrimaryAttackAction, ETriggerEvent::Started, this, &AARCharacter::OnPrimaryAttack);
+	EnhancedInputComponent->BindAction(SecondaryAttackAction, ETriggerEvent::Started, this, &AARCharacter::OnSecondaryAttack);
+	EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &AARCharacter::Jump);
+	EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Started, this, &AARCharacter::OnInteract);
+	EnhancedInputComponent->BindAction(DodgeAction, ETriggerEvent::Started, this, &AARCharacter::OnDodge);
 }
 
 void AARCharacter::DrawDebugRotationArrows() const

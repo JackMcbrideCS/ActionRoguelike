@@ -10,7 +10,7 @@ class UProjectileMovementComponent;
 class USphereComponent;
 class UParticleSystem;
 
-UCLASS()
+UCLASS(Abstract)
 class ACTIONROGUELIKE_API AARProjectileBase : public AActor
 {
 	GENERATED_BODY()
@@ -30,6 +30,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components)
 	UProjectileMovementComponent* MovementComponent;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components)
+	UParticleSystemComponent* ParticleComponent;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UParticleSystem* HitParticle;
 
@@ -39,6 +42,15 @@ protected:
 	virtual void BeginPlay() override;
 
 	virtual void TravelTime_TimerElapsed();
+
+	UFUNCTION()
+	virtual void OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+	virtual void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	void Explode();
 
 public:	
 	// Called every frame

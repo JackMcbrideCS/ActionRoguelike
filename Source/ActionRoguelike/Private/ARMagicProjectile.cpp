@@ -13,10 +13,6 @@ AARMagicProjectile::AARMagicProjectile()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	
-	ParticleComponent = CreateDefaultSubobject<UParticleSystemComponent>("Particle Component");
-	ParticleComponent->SetupAttachment(SphereComponent);
-	SphereComponent->OnComponentBeginOverlap.AddDynamic(this, &AARMagicProjectile::OnBeginOverlap);
 }
 
 // Called when the game starts or when spawned
@@ -47,8 +43,7 @@ void AARMagicProjectile::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent
 	}
 
 	AttributeComponent->ApplyHealthChange(-20.0f);
-	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitParticle, GetTransform());
-	Destroy();
+	Super::OnBeginOverlap(OverlappedComponent, OtherActor, OtherComp, OtherBodyIndex, bFromSweep, SweepResult);
 }
 
 // Called every frame

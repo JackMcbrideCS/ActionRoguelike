@@ -19,6 +19,10 @@ public:
 	AARMagicProjectile();
 
 protected:
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UCameraShakeBase> ExplodeCameraShake;
+	
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	virtual void TravelTime_TimerElapsed() override;
@@ -27,5 +31,5 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
+	virtual void Explode_Implementation() override;
 };

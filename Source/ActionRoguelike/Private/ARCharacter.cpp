@@ -11,6 +11,7 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 
 // Sets default values
@@ -78,6 +79,7 @@ void AARCharacter::OnLook(const FInputActionValue& Value)
 void AARCharacter::OnPrimaryAttack(const FInputActionValue& Value)
 {
 	PlayAnimMontage(AttackAnimMontage);
+	UGameplayStatics::SpawnEmitterAttached(PrimaryAttackEffect, GetMesh(), PrimaryAttackEffectSocket);
 	GetWorldTimerManager().SetTimer(TimerHandle_PrimaryAttack, this, &AARCharacter::PrimaryAttack_TimerElapsed, 0.2f);
 }
 

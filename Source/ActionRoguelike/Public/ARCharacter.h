@@ -66,6 +66,12 @@ protected:
 	UPROPERTY(EditAnywhere, Category = Attack)
 	FName PrimaryAttackSocket;
 
+	UPROPERTY(EditAnywhere, Category = Attack)
+	FName PrimaryAttackEffectSocket;
+
+	UPROPERTY(EditAnywhere, Category = Attack)
+	UParticleSystem* PrimaryAttackEffect;
+
 public:
 	// Sets default values for this character's properties
 	AARCharacter();

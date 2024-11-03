@@ -52,3 +52,9 @@ void AARMagicProjectile::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
+void AARMagicProjectile::Explode_Implementation()
+{
+	Super::Explode_Implementation();
+	UGameplayStatics::PlayWorldCameraShake(GetWorld(), ExplodeCameraShake, GetActorLocation(), 0.0f, 1000.0f);
+}
+

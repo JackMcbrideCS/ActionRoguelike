@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "ARAICharacter.generated.h"
 
+class UARAttributeComponent;
 class UPawnSensingComponent;
 
 UCLASS()
@@ -21,6 +22,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, Category = Components)
 	UPawnSensingComponent* PawnSensingComponent;
+
+	UPROPERTY(VisibleAnywhere, Category = Components)
+	UARAttributeComponent* AttributeComponent;
 
 	virtual void BeginPlay() override;
 	

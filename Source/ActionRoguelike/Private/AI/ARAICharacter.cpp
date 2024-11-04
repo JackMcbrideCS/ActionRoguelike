@@ -4,6 +4,7 @@
 #include "AI/ARAICharacter.h"
 
 #include "AIController.h"
+#include "ARAttributeComponent.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Perception/PawnSensingComponent.h"
 
@@ -11,6 +12,7 @@
 AARAICharacter::AARAICharacter()
 {
 	PawnSensingComponent = CreateDefaultSubobject<UPawnSensingComponent>("Pawn Sensing Component");
+	AttributeComponent = CreateDefaultSubobject<UARAttributeComponent>("Attribute Component");
 }
 
 void AARAICharacter::BeginPlay()

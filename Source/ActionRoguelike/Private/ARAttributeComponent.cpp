@@ -20,6 +20,27 @@ void UARAttributeComponent::BeginPlay()
 	Health = MaxHealth;
 }
 
+UARAttributeComponent* UARAttributeComponent::GetAttributes(const AActor* Actor)
+{
+	if (!Actor)
+	{
+		return nullptr;
+	}
+
+	return Actor->GetComponentByClass<UARAttributeComponent>();
+}
+
+bool UARAttributeComponent::IsActorAlive(const AActor* Actor)
+{
+	const UARAttributeComponent* AttributeComponent = GetAttributes(Actor);
+	if (!AttributeComponent)
+	{
+		return false;
+	}
+
+	return AttributeComponent->IsAlive();
+}
+
 bool UARAttributeComponent::ApplyHealthChange(AActor* Instigator, float Delta)
 {
 	const float OldHealth = Health;

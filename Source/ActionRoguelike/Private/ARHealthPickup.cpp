@@ -20,7 +20,7 @@ bool AARHealthPickup::CanInteract_Implementation(APawn* InstigatorPawn) const
 void AARHealthPickup::ApplyEffect_Implementation(APawn* Pawn)
 {
 	Super::ApplyEffect_Implementation(Pawn);
-	UARAttributeComponent* AttributeComponent = Pawn->GetComponentByClass<UARAttributeComponent>();
+	UARAttributeComponent* AttributeComponent = UARAttributeComponent::GetAttributes(Pawn);
 	if (!AttributeComponent)
 	{
 		return;

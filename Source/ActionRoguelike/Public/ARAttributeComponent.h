@@ -18,6 +18,12 @@ public:
 	UARAttributeComponent();
 	virtual void BeginPlay() override;
 
+	UFUNCTION(BlueprintCallable, Category = Attributes)
+	static UARAttributeComponent* GetAttributes(const AActor* Actor);
+
+	UFUNCTION(BlueprintCallable, Category = Attributes)
+	static bool IsActorAlive(const AActor* Actor);
+
 protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Attributes)

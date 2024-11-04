@@ -20,7 +20,7 @@ EBTNodeResult::Type UARBTTask_HealSelf::ExecuteTask(UBehaviorTreeComponent& Owne
 		return EBTNodeResult::Failed;
 	}
 	
-	UARAttributeComponent* AttributeComponent = AIPawn->GetComponentByClass<UARAttributeComponent>();
+	UARAttributeComponent* AttributeComponent = UARAttributeComponent::GetAttributes(AIPawn);
 	if (!ensure(AttributeComponent))
 	{
 		return EBTNodeResult::Failed;

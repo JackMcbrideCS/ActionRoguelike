@@ -23,7 +23,7 @@ void UARBTService_HealthThreshold::TickNode(UBehaviorTreeComponent& OwnerComp, u
 		return;
 	}
 
-	const UARAttributeComponent* AttributeComponent = AIPawn->GetComponentByClass<UARAttributeComponent>();
+	const UARAttributeComponent* AttributeComponent = UARAttributeComponent::GetAttributes(AIPawn);
 	if (!ensure(AttributeComponent))
 	{
 		return;

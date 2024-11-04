@@ -29,8 +29,7 @@ void AARMagicProjectile::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent
 		return;
 	}
 
-	UActorComponent* Component = OtherActor->GetComponentByClass(UARAttributeComponent::StaticClass());
-	UARAttributeComponent* AttributeComponent = Cast<UARAttributeComponent>(Component);
+	UARAttributeComponent* AttributeComponent = UARAttributeComponent::GetAttributes(OtherActor);
 	if (!AttributeComponent)
 	{
 		return;

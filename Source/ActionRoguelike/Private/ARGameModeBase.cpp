@@ -47,15 +47,7 @@ bool AARGameModeBase::CanSpawnBot()
 	int32 LivingBotCount = 0;
 	for (TActorIterator<AARAICharacter> It(GetWorld()); It; ++It)
 	{
-		const AARAICharacter* AICharacter = *It;
-		const UARAttributeComponent* AttributeComponent = AICharacter->GetComponentByClass<UARAttributeComponent>();
-
-		if (!ensure(AttributeComponent))
-		{
-			continue;
-		}
-		
-		if (!AttributeComponent->IsAlive())
+		if (!UARAttributeComponent::IsActorAlive(*It))
 		{
 			continue;
 		}

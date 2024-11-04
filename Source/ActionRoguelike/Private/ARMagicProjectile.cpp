@@ -36,7 +36,7 @@ void AARMagicProjectile::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent
 		return;
 	}
 
-	AttributeComponent->ApplyHealthChange(Damage * -1.0f);
+	AttributeComponent->ApplyHealthChange(GetInstigator(), Damage * -1.0f);
 	Super::OnBeginOverlap(OverlappedComponent, OtherActor, OtherComp, OtherBodyIndex, bFromSweep, SweepResult);
 }
 

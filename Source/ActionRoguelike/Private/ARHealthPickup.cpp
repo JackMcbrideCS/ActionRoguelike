@@ -26,5 +26,5 @@ void AARHealthPickup::ApplyEffect_Implementation(APawn* Pawn)
 		return;
 	}
 
-	AttributeComponent->ApplyHealthChange(20.0f);
+	AttributeComponent->ApplyHealthChange(this, 20.0f);
 }

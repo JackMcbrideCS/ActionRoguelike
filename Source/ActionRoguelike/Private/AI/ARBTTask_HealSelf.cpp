@@ -14,7 +14,7 @@ EBTNodeResult::Type UARBTTask_HealSelf::ExecuteTask(UBehaviorTreeComponent& Owne
 		return EBTNodeResult::Failed;
 	}
 
-	const APawn* AIPawn = AIController->GetPawn();
+	APawn* AIPawn = AIController->GetPawn();
 	if (!ensure(AIPawn))
 	{
 		return EBTNodeResult::Failed;
@@ -26,6 +26,6 @@ EBTNodeResult::Type UARBTTask_HealSelf::ExecuteTask(UBehaviorTreeComponent& Owne
 		return EBTNodeResult::Failed;
 	}
 
-	AttributeComponent->ApplyHealthChange(HealthGain);
+	AttributeComponent->ApplyHealthChange(AIPawn, HealthGain);
 	return EBTNodeResult::Succeeded;
 }

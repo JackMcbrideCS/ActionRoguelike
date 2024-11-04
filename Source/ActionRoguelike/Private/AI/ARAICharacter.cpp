@@ -32,13 +32,20 @@ void AARAICharacter::OnHealthChanged(AActor* InstigatorActor, UARAttributeCompon
 		return;
 	}
 
-	if (AttributeComponent->IsAlive())
+	if (InstigatorActor == this)
 	{
 		return;
 	}
 	
 	const AAIController* AIController = Cast<AAIController>(GetController());
 	if (!ensure(AIController))
+	{
+		return;
+	}
+	
+	SetTargetActor(InstigatorActor);
+
+	if (AttributeComponent->IsAlive())
 	{
 		return;
 	}
@@ -58,6 +65,17 @@ void AARAICharacter::OnPawnSeen(APawn* Pawn)
 		return;
 	}
 	
-	AIController->GetBlackboardComponent()->SetValueAsObject(TEXT("TargetActor"), Pawn);
+	SetTargetActor(Pawn);
+}
+
+void AARAICharacter::SetTargetActor(AActor* NewTarget) const
+{
+	AAIController* AIController = Cast<AAIController>(GetController());
+	if (!ensure(AIController))
+	{
+		return;
+	}
+	
+	AIController->GetBlackboardComponent()->SetValueAsObject(TEXT("TargetActor"), NewTarget);
 	DrawDebugString(GetWorld(), GetActorLocation(), TEXT("Player Spotted!"), nullptr, FColor::Red, 4.0f, true);
 }

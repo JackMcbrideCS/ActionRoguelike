@@ -16,7 +16,7 @@ void UARBTService_CheckAttackRange::TickNode(UBehaviorTreeComponent& OwnerComp, 
 		return;
 	}
 
-	APawn* AIPawn = AIController->GetPawn();
+	const APawn* AIPawn = AIController->GetPawn();
 	if (!ensure(AIPawn))
 	{
 		return;
@@ -27,21 +27,21 @@ void UARBTService_CheckAttackRange::TickNode(UBehaviorTreeComponent& OwnerComp, 
 	{
 		return;
 	}
-	
-	AActor* TargetActor = Cast<AActor>(BlackboardComponent->GetValueAsObject(TargetActorRangeKey.SelectedKeyName));
+
+	const AActor* TargetActor = Cast<AActor>(BlackboardComponent->GetValueAsObject(TargetActorRangeKey.SelectedKeyName));
 	if (!TargetActor)
 	{
 		return;
 	}
 
-	float distance = FVector::Distance(TargetActor->GetActorLocation(), AIPawn->GetActorLocation());
-	bool bInRange = distance < 2000.0f;
+	const float Distance = FVector::Distance(TargetActor->GetActorLocation(), AIPawn->GetActorLocation());
+	const bool bInRange = Distance < 2000.0f;
 	if (!bInRange)
 	{
 		BlackboardComponent->SetValueAsBool(InAttackRangeKey.SelectedKeyName, false);
 		return;
 	}
 
-	bool bHasLineOfSight = AIController->LineOfSightTo(TargetActor);
+	const bool bHasLineOfSight = AIController->LineOfSightTo(TargetActor);
 	BlackboardComponent->SetValueAsBool(InAttackRangeKey.SelectedKeyName, bHasLineOfSight);
 }

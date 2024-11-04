@@ -57,9 +57,4 @@ protected:
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 	void Explode();
-
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
 };

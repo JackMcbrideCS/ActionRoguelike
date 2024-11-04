@@ -39,9 +39,3 @@ void AARExplosiveBarrel::OnStaticMeshHit(UPrimitiveComponent* HitComponent, AAct
 	RadialForceComponent->FireImpulse();
 }
 
-// Called every frame
-void AARExplosiveBarrel::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-}
-

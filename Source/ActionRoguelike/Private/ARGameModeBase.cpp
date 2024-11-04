@@ -16,36 +16,6 @@ void AARGameModeBase::OnSpawnBotQueryCompleted(UEnvQueryInstanceBlueprintWrapper
 		UE_LOG(LogTemp, Warning, TEXT("Spawn Bot EQS Query Failed!"));
 		return;
 	}
-
-	int32 LivingBotCount = 0;
-	for (TActorIterator<AARAICharacter> It(GetWorld()); It; ++It)
-	{
-		const AARAICharacter* AICharacter = *It;
-		const UARAttributeComponent* AttributeComponent = AICharacter->GetComponentByClass<UARAttributeComponent>();
-
-		if (!ensure(AttributeComponent))
-		{
-			continue;
-		}
-		
-		if (AttributeComponent->GetHealth() <= 0.0f)
-		{
-			continue;
-		}
-		
-		LivingBotCount++;			
-	}
-
-	if (!ensure(DifficultyCurve))
-	{
-		return;
-	}
-
-	const float MaxBotCount = DifficultyCurve->GetFloatValue(GetWorld()->GetTimeSeconds());
-	if (LivingBotCount >= FMath::Floor(MaxBotCount))
-	{
-		return;
-	}
 	
 	TArray<FVector> Locations = QueryInstance->GetResultsAsLocations();
 	if (Locations.Num() == 0)
@@ -59,12 +29,52 @@ void AARGameModeBase::OnSpawnBotQueryCompleted(UEnvQueryInstanceBlueprintWrapper
 
 void AARGameModeBase::SpawnBotTimerElapsed()
 {
+	if (!CanSpawnBot())
+	{
+		return;
+	}
+	
 	UEnvQueryInstanceBlueprintWrapper* QueryInstance = UEnvQueryManager::RunEQSQuery(this, SpawnBotQuery, this, EEnvQueryRunMode::RandomBest5Pct, nullptr);
 	if (!ensure(QueryInstance))
 	{
 		return;
 	}
 	QueryInstance->GetOnQueryFinishedEvent().AddDynamic(this, &AARGameModeBase::OnSpawnBotQueryCompleted);
+}
+
+bool AARGameModeBase::CanSpawnBot()
+{
+	int32 LivingBotCount = 0;
+	for (TActorIterator<AARAICharacter> It(GetWorld()); It; ++It)
+	{
+		const AARAICharacter* AICharacter = *It;
+		const UARAttributeComponent* AttributeComponent = AICharacter->GetComponentByClass<UARAttributeComponent>();
+
+		if (!ensure(AttributeComponent))
+		{
+			continue;
+		}
+		
+		if (!AttributeComponent->IsAlive())
+		{
+			continue;
+		}
+		
+		LivingBotCount++;			
+	}
+
+	if (!ensure(DifficultyCurve))
+	{
+		return false;
+	}
+
+	const float MaxBotCount = DifficultyCurve->GetFloatValue(GetWorld()->GetTimeSeconds());
+	if (LivingBotCount >= FMath::Floor(MaxBotCount))
+	{
+		return false;
+	}
+
+	return true;
 }
 
 AARGameModeBase::AARGameModeBase()

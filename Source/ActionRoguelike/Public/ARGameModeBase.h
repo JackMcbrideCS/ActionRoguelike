@@ -37,6 +37,8 @@ protected:
 
 	UFUNCTION()
 	void SpawnBotTimerElapsed();
+
+	bool CanSpawnBot();
 	
 public:
 

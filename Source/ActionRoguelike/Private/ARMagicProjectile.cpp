@@ -15,12 +15,6 @@ AARMagicProjectile::AARMagicProjectile()
 	PrimaryActorTick.bCanEverTick = true;
 }
 
-// Called when the game starts or when spawned
-void AARMagicProjectile::BeginPlay()
-{
-	Super::BeginPlay();
-}
-
 void AARMagicProjectile::TravelTime_TimerElapsed()
 {
 	Super::TravelTime_TimerElapsed();
@@ -42,14 +36,8 @@ void AARMagicProjectile::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent
 		return;
 	}
 
-	AttributeComponent->ApplyHealthChange(-20.0f);
+	AttributeComponent->ApplyHealthChange(Damage * -1.0f);
 	Super::OnBeginOverlap(OverlappedComponent, OtherActor, OtherComp, OtherBodyIndex, bFromSweep, SweepResult);
-}
-
-// Called every frame
-void AARMagicProjectile::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
 }
 
 void AARMagicProjectile::Explode_Implementation()

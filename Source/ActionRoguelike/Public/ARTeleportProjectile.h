@@ -15,9 +15,6 @@ class ACTIONROGUELIKE_API AARTeleportProjectile : public AARProjectileBase
 public:
 	UPROPERTY(EditAnywhere)
 	float TeleportDelay;
-	
-	// Sets default values for this actor's properties
-	AARTeleportProjectile();
 
 protected:
 	FTimerHandle TimerHandle_TeleportDelay;

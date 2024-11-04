@@ -21,14 +21,15 @@ AARProjectileBase::AARProjectileBase()
 	RootComponent = SphereComponent;
 
 	ParticleComponent = CreateDefaultSubobject<UParticleSystemComponent>("Particle Component");
-	ParticleComponent->SetupAttachment(SphereComponent);
+	ParticleComponent->SetupAttachment(RootComponent);
+	
+	AudioComponent = CreateDefaultSubobject<UAudioComponent>("Audio Component");
+	AudioComponent->SetupAttachment(RootComponent);
 	
 	MovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>("Movement Component");
 	MovementComponent->InitialSpeed = 1000.0f;
 	MovementComponent->bRotationFollowsVelocity = true;
 	MovementComponent->bInitialVelocityInLocalSpace = true;
-
-	AudioComponent = CreateDefaultSubobject<UAudioComponent>("Audio Component");
 }
 
 // Called when the game starts or when spawned
@@ -77,11 +78,5 @@ void AARProjectileBase::Explode_Implementation()
 	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitParticle, GetTransform());
 	UGameplayStatics::PlaySoundAtLocation(GetWorld(), HitSoundCue, GetActorLocation());
 	Destroy();
-}
-
-// Called every frame
-void AARProjectileBase::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
 }
 

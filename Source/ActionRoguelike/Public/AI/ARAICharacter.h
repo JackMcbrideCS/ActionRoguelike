@@ -26,8 +26,11 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = Components)
 	UARAttributeComponent* AttributeComponent;
 
-	virtual void BeginPlay() override;
+	UFUNCTION()
+	void OnHealthChanged(AActor* InstigatorActor, UARAttributeComponent* OwningComponent, float NewHealth, float Delta);
 	
 	UFUNCTION()
 	void OnPawnSeen(APawn* Pawn);
+
+	virtual void BeginPlay() override;
 };

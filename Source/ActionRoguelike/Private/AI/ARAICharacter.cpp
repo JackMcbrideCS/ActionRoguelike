@@ -44,6 +44,7 @@ void AARAICharacter::OnHealthChanged(AActor* InstigatorActor, UARAttributeCompon
 	}
 	
 	SetTargetActor(InstigatorActor);
+	GetMesh()->SetScalarParameterValueOnMaterials(TEXT("HitTime"), GetWorld()->GetTimeSeconds());
 
 	if (AttributeComponent->IsAlive())
 	{

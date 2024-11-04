@@ -195,11 +195,13 @@ void AARCharacter::OnHealthChanged(AActor* InstigatorActor, UARAttributeComponen
 	}
 	
 	GetMesh()->SetScalarParameterValueOnMaterials(TEXT("HitTime"), GetWorld()->GetTimeSeconds());
-	if (NewHealth <= 0.0f)
+	if (AttributeComponent->IsAlive())
 	{
-		APlayerController* PlayerController = Cast<APlayerController>(GetController());
-		DisableInput(PlayerController);
+		return;
 	}
+
+	APlayerController* PlayerController = Cast<APlayerController>(GetController());
+	DisableInput(PlayerController);
 }
 
 bool AARCharacter::AimTrace(FHitResult& OutHit, const float TraceLength, const FCollisionObjectQueryParams& ObjectQueryParams) const

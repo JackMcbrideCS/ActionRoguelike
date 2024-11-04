@@ -8,7 +8,7 @@
 bool AARHealthPickup::CanInteract_Implementation(APawn* InstigatorPawn) const
 {
 	Super::CanInteract_Implementation(InstigatorPawn);
-	UARAttributeComponent* AttributeComponent = InstigatorPawn->GetComponentByClass<UARAttributeComponent>();
+	const UARAttributeComponent* AttributeComponent = InstigatorPawn->GetComponentByClass<UARAttributeComponent>();
 	if (!AttributeComponent)
 	{
 		return false;

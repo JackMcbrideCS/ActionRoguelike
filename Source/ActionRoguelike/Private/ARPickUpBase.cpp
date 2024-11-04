@@ -8,8 +8,7 @@
 
 void AARPickUpBase::Interact_Implementation(APawn* InstigatorPawn)
 {
-	MeshComponent->SetVisibility(false);
-	MeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	SetActive(false);
 	ApplyEffect(InstigatorPawn);
 	GetWorldTimerManager().SetTimer(TimerHandle_Respawn, this, &AARPickUpBase::Respawn, RespawnTime);
 }
@@ -31,8 +30,13 @@ bool AARPickUpBase::CanInteract_Implementation(APawn* InstigatorPawn) const
 
 void AARPickUpBase::Respawn()
 {
-	MeshComponent->SetVisibility(true);
-	MeshComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	SetActive(true);
+}
+
+void AARPickUpBase::SetActive(bool bIsActive)
+{
+	RootComponent->SetVisibility(bIsActive);
+	SetActorEnableCollision(bIsActive);
 }
 
 void AARPickUpBase::ApplyEffect_Implementation(APawn* Pawn)

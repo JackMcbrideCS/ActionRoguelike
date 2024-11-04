@@ -32,5 +32,7 @@ protected:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 	void ApplyEffect(APawn* Pawn);
 
-	void Respawn();
+	virtual void Respawn();
+
+	void SetActive(bool bIsActive);
 };

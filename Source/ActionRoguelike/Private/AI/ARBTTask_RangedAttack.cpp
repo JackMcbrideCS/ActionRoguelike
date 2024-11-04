@@ -4,8 +4,14 @@
 #include "AI/ARBTTask_RangedAttack.h"
 
 #include "AIController.h"
+#include "ARAttributeComponent.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "GameFramework/Character.h"
+
+UARBTTask_RangedAttack::UARBTTask_RangedAttack()
+{
+	MaxBulletSpread = 2.0f;
+}
 
 EBTNodeResult::Type UARBTTask_RangedAttack::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
@@ -45,13 +51,20 @@ EBTNodeResult::Type UARBTTask_RangedAttack::ExecuteTask(UBehaviorTreeComponent& 
 		return EBTNodeResult::Failed;
 	}
 
+	if (!UARAttributeComponent::IsActorAlive(TargetActor))
+	{
+		return EBTNodeResult::Failed;
+	}
+	
 	const FVector Direction = TargetActor->GetActorLocation() - MuzzleLocation;
 	FRotator MuzzleRotation = Direction.Rotation();
+	MuzzleRotation.Pitch += FMath::RandRange(0.0f, MaxBulletSpread);
+	MuzzleRotation.Yaw += FMath::RandRange(-MaxBulletSpread, MaxBulletSpread);
 
 	FActorSpawnParameters SpawnParameters;
 	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	SpawnParameters.Instigator = AIPawn;
-	
-	AActor* SpawnedProjectile = GetWorld()->SpawnActor<AActor>(ProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParameters);
+
+	const AActor* SpawnedProjectile = GetWorld()->SpawnActor<AActor>(ProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParameters);
 	return SpawnedProjectile ? EBTNodeResult::Succeeded : EBTNodeResult::Failed;
 }

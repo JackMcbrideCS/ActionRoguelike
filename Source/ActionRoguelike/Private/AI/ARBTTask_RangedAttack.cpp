@@ -15,6 +15,12 @@ EBTNodeResult::Type UARBTTask_RangedAttack::ExecuteTask(UBehaviorTreeComponent& 
 		return EBTNodeResult::Failed;
 	}
 
+	APawn* AIPawn = AIController->GetPawn();
+	if (!ensure(AIPawn))
+	{
+		return EBTNodeResult::Failed;
+	}
+
 	const ACharacter* AICharacter = Cast<ACharacter>(AIController->GetPawn());
 	if (!ensure(AICharacter))
 	{
@@ -44,6 +50,7 @@ EBTNodeResult::Type UARBTTask_RangedAttack::ExecuteTask(UBehaviorTreeComponent& 
 
 	FActorSpawnParameters SpawnParameters;
 	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	SpawnParameters.Instigator = AIPawn;
 	
 	AActor* SpawnedProjectile = GetWorld()->SpawnActor<AActor>(ProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParameters);
 	return SpawnedProjectile ? EBTNodeResult::Succeeded : EBTNodeResult::Failed;

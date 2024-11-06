@@ -4,6 +4,7 @@
 #include "ARMagicProjectile.h"
 
 #include "ARAttributeComponent.h"
+#include "ARGameplayFunctionLibrary.h"
 #include "Components/SphereComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Particles/ParticleSystemComponent.h"
@@ -13,6 +14,9 @@ AARMagicProjectile::AARMagicProjectile()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+
+	Damage = 40.0f;
+	DamageImpulseStrength = 150000.0f;
 }
 
 void AARMagicProjectile::TravelTime_TimerElapsed()
@@ -29,13 +33,12 @@ void AARMagicProjectile::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent
 		return;
 	}
 
-	UARAttributeComponent* AttributeComponent = UARAttributeComponent::GetAttributes(OtherActor);
-	if (!AttributeComponent)
+	if (!UARAttributeComponent::GetAttributes(OtherActor))
 	{
 		return;
 	}
 
-	AttributeComponent->ApplyHealthChange(GetInstigator(), Damage * -1.0f);
+	UARGameplayFunctionLibrary::ApplyDirectionalDamage(GetInstigator(), OtherActor, Damage, DamageImpulseStrength, SweepResult);
 	Super::OnBeginOverlap(OverlappedComponent, OtherActor, OtherComp, OtherBodyIndex, bFromSweep, SweepResult);
 }
 

@@ -8,6 +8,8 @@
 #include "BrainComponent.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Blueprint/UserWidget.h"
+#include "Components/CapsuleComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Perception/PawnSensingComponent.h"
 #include "UI/ARWorldUserWidget.h"
 
@@ -16,6 +18,8 @@ AARAICharacter::AARAICharacter()
 {
 	PawnSensingComponent = CreateDefaultSubobject<UPawnSensingComponent>("Pawn Sensing Component");
 	AttributeComponent = CreateDefaultSubobject<UARAttributeComponent>("Attribute Component");
+	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_WorldDynamic, ECR_Ignore);
+	GetMesh()->SetGenerateOverlapEvents(true);
 }
 
 void AARAICharacter::BeginPlay()
@@ -66,6 +70,8 @@ void AARAICharacter::OnHealthChanged(AActor* InstigatorActor, UARAttributeCompon
 	AIController->GetBrainComponent()->StopLogic(TEXT("Killed"));
 	GetMesh()->SetAllBodiesSimulatePhysics(true);
 	GetMesh()->SetCollisionProfileName(TEXT("Ragdoll"));
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	GetCharacterMovement()->DisableMovement();
 	
 	SetLifeSpan(10.0f);
 }

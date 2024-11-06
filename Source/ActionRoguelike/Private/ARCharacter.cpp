@@ -14,6 +14,8 @@
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 
+static TAutoConsoleVariable<bool> CVarDebugDrawAim(TEXT("ar.DebugDrawAim"), false, TEXT("Enable debug draws for any aim sweeps."), ECVF_Cheat);
+
 // Sets default values
 AARCharacter::AARCharacter()
 {
@@ -209,7 +211,12 @@ bool AARCharacter::AimTrace(FHitResult& OutHit, const float TraceLength, const F
 	const FVector TraceStart = CameraComponent->GetComponentLocation();
 	const FVector TraceDirection = CameraComponent->GetComponentRotation().Vector() * 1000.0f;
 	const FVector TraceEnd = TraceStart + TraceDirection * TraceLength;
-	return GetWorld()->LineTraceSingleByObjectType(OutHit, TraceStart, TraceEnd, ObjectQueryParams);
+	const bool bHit = GetWorld()->LineTraceSingleByObjectType(OutHit, TraceStart, TraceEnd, ObjectQueryParams);
+	if (CVarDebugDrawAim.GetValueOnGameThread())
+	{
+		DrawDebugLine(GetWorld(), TraceStart, TraceEnd, bHit ? FColor::Green : FColor::Red, false, 2.0f, 0, 2.0f);
+	}
+	return bHit;
 }
 
 bool AARCharacter::AimSweep(TArray<FHitResult>& OutHits, const float TraceLength,
@@ -218,7 +225,18 @@ bool AARCharacter::AimSweep(TArray<FHitResult>& OutHits, const float TraceLength
 	const FVector TraceStart = CameraComponent->GetComponentLocation();
 	const FVector TraceDirection = CameraComponent->GetComponentRotation().Vector() * 1000.0f;
 	const FVector TraceEnd = TraceStart + TraceDirection * TraceLength;
-	return GetWorld()->SweepMultiByObjectType(OutHits, TraceStart, TraceEnd, FQuat::Identity, ObjectQueryParams, CollisionShape);
+	const bool bHit = GetWorld()->SweepMultiByObjectType(OutHits, TraceStart, TraceEnd, FQuat::Identity, ObjectQueryParams, CollisionShape);
+
+	if (CVarDebugDrawAim.GetValueOnGameThread())
+	{
+		DrawDebugLine(GetWorld(), TraceStart, TraceEnd, bHit ? FColor::Green : FColor::Red, false, 2.0f, 0, 2.0f);
+		for (FHitResult HitResult : OutHits)
+		{
+			DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, CollisionShape.GetSphereRadius(), 12, FColor::Green, false, 2.0f);
+		}
+	}
+	
+	return bHit;
 }
 
 void AARCharacter::HealSelf(const float Amount)

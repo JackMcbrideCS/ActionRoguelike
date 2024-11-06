@@ -37,14 +37,10 @@ void AARProjectileBase::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (GetInstigator())
+	if (ensure(GetInstigator()))
 	{
 		SphereComponent->IgnoreActorWhenMoving(GetInstigator(), true);
 		GetInstigator()->MoveIgnoreActorAdd(this);
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Projectile %s does not have an Instigator."), *GetNameSafe(this));
 	}
 
 	if (TravelTime > 0.0f)
@@ -64,12 +60,22 @@ void AARProjectileBase::TravelTime_TimerElapsed()
 void AARProjectileBase::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	if (GetInstigator() == OtherActor)
+	{
+		return;
+	}
+	
 	Explode();
 }
 
 void AARProjectileBase::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 	FVector NormalImpulse, const FHitResult& Hit)
 {
+	if (GetInstigator() == OtherActor)
+	{
+		return;
+	}
+	
 	Explode();
 }
 

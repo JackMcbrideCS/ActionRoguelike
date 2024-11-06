@@ -9,6 +9,8 @@
 #include "AI/ARAICharacter.h"
 #include "EnvironmentQuery/EnvQueryManager.h"
 
+static TAutoConsoleVariable<bool> CVarSpawnBots(TEXT("ar.SpawnBots"), true, TEXT("Enable spawning of bots via timer."), ECVF_Cheat);
+
 void AARGameModeBase::OnSpawnBotQueryCompleted(UEnvQueryInstanceBlueprintWrapper* QueryInstance,
 	EEnvQueryStatus::Type QueryStatus)
 {
@@ -56,6 +58,11 @@ void AARGameModeBase::RespawnPlayerElapsed(AController* Controller)
 
 bool AARGameModeBase::CanSpawnBot()
 {
+	if (!CVarSpawnBots.GetValueOnGameThread())
+	{
+		return false;
+	}
+	
 	int32 LivingBotCount = 0;
 	for (TActorIterator<AARAICharacter> It(GetWorld()); It; ++It)
 	{

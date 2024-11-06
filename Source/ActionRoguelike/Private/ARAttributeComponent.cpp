@@ -5,6 +5,8 @@
 
 #include "ARGameModeBase.h"
 
+static TAutoConsoleVariable<float> CVarDamageMultiplier(TEXT("ar.DamageMultiplier"), 1.0f, TEXT("Global Damage Modifier for Attribute Components."), ECVF_Cheat);
+
 // Sets default values for this component's properties
 UARAttributeComponent::UARAttributeComponent()
 {
@@ -59,6 +61,11 @@ bool UARAttributeComponent::ApplyHealthChange(AActor* Instigator, float Delta)
 	if (!GetOwner()->CanBeDamaged() && Delta < 0.0f)
 	{
 		return false;
+	}
+
+	if (Delta < 0.0f)
+	{
+		Delta *= CVarDamageMultiplier.GetValueOnGameThread();
 	}
 	
 	const float OldHealth = Health;

@@ -4,6 +4,7 @@
 #include "ARGameModeBase.h"
 
 #include "ARAttributeComponent.h"
+#include "ARCharacter.h"
 #include "EngineUtils.h"
 #include "AI/ARAICharacter.h"
 #include "EnvironmentQuery/EnvQueryManager.h"
@@ -42,6 +43,17 @@ void AARGameModeBase::SpawnBotTimerElapsed()
 	QueryInstance->GetOnQueryFinishedEvent().AddDynamic(this, &AARGameModeBase::OnSpawnBotQueryCompleted);
 }
 
+void AARGameModeBase::RespawnPlayerElapsed(AController* Controller)
+{
+	if (!ensure(Controller))
+	{
+		return;
+	}
+
+	Controller->UnPossess();
+	RestartPlayer(Controller);
+}
+
 bool AARGameModeBase::CanSpawnBot()
 {
 	int32 LivingBotCount = 0;
@@ -72,6 +84,7 @@ bool AARGameModeBase::CanSpawnBot()
 AARGameModeBase::AARGameModeBase()
 {
 	SpawnTimerInterval = 2.0f;
+	RespawnDelay = 2.0f;
 }
 
 void AARGameModeBase::StartPlay()
@@ -79,6 +92,18 @@ void AARGameModeBase::StartPlay()
 	Super::StartPlay();
 
 	GetWorldTimerManager().SetTimer(TimerHandle_SpawnBots, this, &AARGameModeBase::SpawnBotTimerElapsed, SpawnTimerInterval, true);
+}
+
+void AARGameModeBase::OnActorKilled(AActor* KillInstigator, AActor* Killed)
+{
+	AARCharacter* Player = Cast<AARCharacter>(Killed);
+	if (Player)
+	{
+		FTimerHandle TimerHandle_RespawnDelay;
+		FTimerDelegate TimerDelegate;
+		TimerDelegate.BindUFunction(this, TEXT("RespawnPlayerElapsed"), Player->GetController());
+		GetWorldTimerManager().SetTimer(TimerHandle_RespawnDelay, TimerDelegate, RespawnDelay, false);
+	}
 }
 
 void AARGameModeBase::KillAllBots()

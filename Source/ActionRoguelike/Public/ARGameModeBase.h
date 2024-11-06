@@ -30,6 +30,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = AI)
 	UCurveFloat* DifficultyCurve;
 
+	UPROPERTY(EditDefaultsOnly, Category = Player)
+	float RespawnDelay;
+
 	FTimerHandle TimerHandle_SpawnBots;
 
 	UFUNCTION()
@@ -38,13 +41,17 @@ protected:
 	UFUNCTION()
 	void SpawnBotTimerElapsed();
 
+	UFUNCTION()
+	void RespawnPlayerElapsed(AController* Controller);
+
 	bool CanSpawnBot();
 	
 public:
-
+	
 	AARGameModeBase();
 
 	virtual void StartPlay() override;
+	virtual void OnActorKilled(AActor* KillInstigator, AActor* Killed);
 
 	UFUNCTION(Exec)
 	void KillAllBots();

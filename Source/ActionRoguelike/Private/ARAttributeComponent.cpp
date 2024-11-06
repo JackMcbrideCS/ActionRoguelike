@@ -3,6 +3,8 @@
 
 #include "ARAttributeComponent.h"
 
+#include "ARGameModeBase.h"
+
 // Sets default values for this component's properties
 UARAttributeComponent::UARAttributeComponent()
 {
@@ -65,6 +67,15 @@ bool UARAttributeComponent::ApplyHealthChange(AActor* Instigator, float Delta)
 	if (Delta == 0.0f)
 	{
 		return false;
+	}
+
+	if (Health == 0.0f)
+	{
+		AARGameModeBase* GameMode = GetWorld()->GetAuthGameMode<AARGameModeBase>();
+		if (ensure(GameMode))
+		{
+			GameMode->OnActorKilled(Instigator, GetOwner());
+		}
 	}
 	
 	OnHealthChanged.Broadcast(Instigator, this, Health, Delta);

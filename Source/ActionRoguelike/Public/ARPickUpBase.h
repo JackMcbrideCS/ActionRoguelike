@@ -27,6 +27,12 @@ public:
 
 protected:
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	int32 PickUpCreditCost;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	int32 PickUpCreditGain;
+	
 	FTimerHandle TimerHandle_Respawn;
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)

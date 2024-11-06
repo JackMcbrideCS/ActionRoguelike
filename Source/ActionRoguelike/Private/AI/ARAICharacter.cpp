@@ -5,6 +5,8 @@
 
 #include "AIController.h"
 #include "ARAttributeComponent.h"
+#include "ARCharacter.h"
+#include "ARPlayerState.h"
 #include "BrainComponent.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Blueprint/UserWidget.h"
@@ -20,6 +22,7 @@ AARAICharacter::AARAICharacter()
 	AttributeComponent = CreateDefaultSubobject<UARAttributeComponent>("Attribute Component");
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_WorldDynamic, ECR_Ignore);
 	GetMesh()->SetGenerateOverlapEvents(true);
+	CreditGainOnKill = 10;
 }
 
 void AARAICharacter::BeginPlay()
@@ -72,6 +75,13 @@ void AARAICharacter::OnHealthChanged(AActor* InstigatorActor, UARAttributeCompon
 	GetMesh()->SetCollisionProfileName(TEXT("Ragdoll"));
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	GetCharacterMovement()->DisableMovement();
+
+	AARCharacter* InstigatorPlayer = Cast<AARCharacter>(InstigatorActor);
+	if (InstigatorPlayer)
+	{
+		AARPlayerState* InstigatorPlayerState = InstigatorPlayer->Controller->GetPlayerState<AARPlayerState>();
+		InstigatorPlayerState->GainCredits(CreditGainOnKill);
+	}
 	
 	SetLifeSpan(10.0f);
 }

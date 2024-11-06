@@ -31,6 +31,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = UI)
 	TSubclassOf<UUserWidget> HealthBarWidgetClass;
 
+	UPROPERTY(EditDefaultsOnly)
+	int32 CreditGainOnKill;
+
 	UARWorldUserWidget* HealthBarWidget;
 
 	UFUNCTION()

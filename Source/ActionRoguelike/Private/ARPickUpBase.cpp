@@ -5,6 +5,7 @@
 
 #include "ARAttributeComponent.h"
 #include "ARCharacter.h"
+#include "ARPlayerState.h"
 
 void AARPickUpBase::Interact_Implementation(APawn* InstigatorPawn)
 {
@@ -25,6 +26,12 @@ AARPickUpBase::AARPickUpBase()
 
 bool AARPickUpBase::CanInteract_Implementation(APawn* InstigatorPawn) const
 {
+	AARPlayerState* InstigatorPlayerState = InstigatorPawn->GetController()->GetPlayerState<AARPlayerState>();
+	if (ensure(InstigatorPlayerState) && !InstigatorPlayerState->HasEnoughCredits(PickUpCreditCost))
+	{
+		return false;	
+	}
+
 	return true;
 }
 
@@ -41,5 +48,13 @@ void AARPickUpBase::SetActive(bool bIsActive)
 
 void AARPickUpBase::ApplyEffect_Implementation(APawn* Pawn)
 {
+	AARPlayerState* PlayerState = Pawn->GetController()->GetPlayerState<AARPlayerState>();
+	if(!ensure(PlayerState))
+	{
+		return;
+	}
+	
+	PlayerState->SpendCredits(PickUpCreditCost);
+	PlayerState->GainCredits(PickUpCreditGain);
 }
 

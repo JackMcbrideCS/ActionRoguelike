@@ -45,4 +45,7 @@ public:
 	AARGameModeBase();
 
 	virtual void StartPlay() override;
+
+	UFUNCTION(Exec)
+	void KillAllBots();
 };

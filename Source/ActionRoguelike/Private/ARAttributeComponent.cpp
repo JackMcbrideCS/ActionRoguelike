@@ -41,8 +41,24 @@ bool UARAttributeComponent::IsActorAlive(const AActor* Actor)
 	return AttributeComponent->IsAlive();
 }
 
+bool UARAttributeComponent::KillActor(AActor* Instigator, AActor* Actor)
+{
+	UARAttributeComponent* AttributeComponent = GetAttributes(Actor);
+	if (!AttributeComponent)
+	{
+		return false;
+	}
+
+	return AttributeComponent->Kill(Instigator);
+}
+
 bool UARAttributeComponent::ApplyHealthChange(AActor* Instigator, float Delta)
 {
+	if (!GetOwner()->CanBeDamaged())
+	{
+		return false;
+	}
+	
 	const float OldHealth = Health;
 	Health = FMath::Clamp(Health + Delta, 0.0f, MaxHealth);
 	Delta = Health - OldHealth;
@@ -68,5 +84,10 @@ float UARAttributeComponent::GetMaxHealth() const
 float UARAttributeComponent::GetHealth() const
 {
 	return Health;
+}
+
+bool UARAttributeComponent::Kill(AActor* Instigator)
+{
+	return ApplyHealthChange(Instigator, -MaxHealth);
 }
 

@@ -221,6 +221,11 @@ bool AARCharacter::AimSweep(TArray<FHitResult>& OutHits, const float TraceLength
 	return GetWorld()->SweepMultiByObjectType(OutHits, TraceStart, TraceEnd, FQuat::Identity, ObjectQueryParams, CollisionShape);
 }
 
+void AARCharacter::HealSelf(const float Amount)
+{
+	AttributeComponent->ApplyHealthChange(this, Amount);
+}
+
 // Called every frame
 void AARCharacter::Tick(float DeltaTime)
 {

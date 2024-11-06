@@ -80,3 +80,16 @@ void AARGameModeBase::StartPlay()
 
 	GetWorldTimerManager().SetTimer(TimerHandle_SpawnBots, this, &AARGameModeBase::SpawnBotTimerElapsed, SpawnTimerInterval, true);
 }
+
+void AARGameModeBase::KillAllBots()
+{
+	for (TActorIterator<AARAICharacter> It(GetWorld()); It; ++It)
+	{
+		if (!UARAttributeComponent::IsActorAlive(*It))
+		{
+			continue;
+		}
+		
+		UARAttributeComponent::KillActor(this, *It);
+	}
+}

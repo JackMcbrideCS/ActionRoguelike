@@ -24,6 +24,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = Attributes)
 	static bool IsActorAlive(const AActor* Actor);
 
+	UFUNCTION(BlueprintCallable, Category = Attributes)
+	static bool KillActor(AActor* Instigator, AActor* Actor);
+
 protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Attributes)
@@ -48,4 +51,6 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	float GetHealth() const;
+
+	bool Kill(AActor* Instigator);
 };

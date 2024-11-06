@@ -24,6 +24,9 @@ public:
 	
 	bool AimTrace(FHitResult& OutHit, const float TraceLength, const FCollisionObjectQueryParams& ObjectQueryParams) const;
 	bool AimSweep(TArray<FHitResult>& OutHits, const float TraceLength, const FCollisionObjectQueryParams& ObjectQueryParams, const FCollisionShape& CollisionShape) const;
+
+	UFUNCTION(Exec)
+	void HealSelf(float Amount = 100.0f);
 	
 protected:
 

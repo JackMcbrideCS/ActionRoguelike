@@ -3,6 +3,7 @@
 
 #include "ARCharacter.h"
 
+#include "ARActionComponent.h"
 #include "ARAttributeComponent.h"
 #include "ARInteractionComponent.h"
 #include "DrawDebugHelpers.h"
@@ -31,6 +32,7 @@ AARCharacter::AARCharacter()
 
 	InteractionComponent = CreateDefaultSubobject<UARInteractionComponent>("Interaction Component");
 	AttributeComponent = CreateDefaultSubobject<UARAttributeComponent>("Attribute Component");
+	ActionComponent = CreateDefaultSubobject<UARActionComponent>("Action Component");
 
 	bUseControllerRotationYaw = false;
 	GetCharacterMovement()->bOrientRotationToMovement = true;
@@ -69,6 +71,16 @@ void AARCharacter::OnMove(const FInputActionValue& Value)
 	
 	AddMovementInput(ForwardVector, InputValue.Y);
 	AddMovementInput(RightVector, InputValue.X);
+}
+
+void AARCharacter::OnSprintStart(const FInputActionValue& Value)
+{
+	ActionComponent->StartActionByName(this, "Sprint");
+}
+
+void AARCharacter::OnSprintStop(const FInputActionValue& Value)
+{
+	ActionComponent->StopActionByName(this, "Sprint");
 }
 
 void AARCharacter::OnLook(const FInputActionValue& Value)
@@ -269,6 +281,8 @@ void AARCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &AARCharacter::Jump);
 	EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Started, this, &AARCharacter::OnInteract);
 	EnhancedInputComponent->BindAction(DodgeAction, ETriggerEvent::Started, this, &AARCharacter::OnDodge);
+	EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Started, this, &AARCharacter::OnSprintStart);
+	EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Completed, this, &AARCharacter::OnSprintStop);
 }
 
 void AARCharacter::DrawDebugRotationArrows() const

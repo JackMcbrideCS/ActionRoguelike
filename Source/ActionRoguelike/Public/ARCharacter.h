@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "ARCharacter.generated.h"
 
+class UARActionComponent;
 class UARAttributeComponent;
 class UARInteractionComponent;
 class UCameraComponent;
@@ -53,6 +54,9 @@ protected:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* DodgeAction{nullptr};
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* SprintAction{nullptr};
 
 	UPROPERTY(EditAnywhere, Category = Attack)
 	TSubclassOf<AActor> PrimaryAttackProjectileClass;
@@ -93,6 +97,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components)
 	UARAttributeComponent* AttributeComponent;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components)
+	UARActionComponent* ActionComponent;
+
 	FTimerHandle TimerHandle_PrimaryAttack;
 	FTimerHandle TimerHandle_SecondaryAttack;
 	FTimerHandle TimerHandle_Dodge;
@@ -101,6 +108,8 @@ protected:
 	virtual void BeginPlay() override;
 	
 	void OnMove(const FInputActionValue& Value);
+	void OnSprintStart(const FInputActionValue& Value);
+	void OnSprintStop(const FInputActionValue& Value);
 	void OnLook(const FInputActionValue& Value);
 	void OnPrimaryAttack(const FInputActionValue& Value);
 	void PrimaryAttack_TimerElapsed();

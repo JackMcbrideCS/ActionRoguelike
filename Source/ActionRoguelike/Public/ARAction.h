@@ -26,6 +26,12 @@ public:
 	
 	UFUNCTION(BlueprintNativeEvent, Category = Action)
 	void StopAction(AActor* Instigator);
+
+	UFUNCTION(BlueprintNativeEvent, Category = Action)
+	bool CanStart(AActor* Instigator) const;
+
+	UFUNCTION(BlueprintNativeEvent, Category = Action)
+	bool IsRunning() const;
 	
 	virtual UWorld* GetWorld() const override;
 
@@ -37,6 +43,8 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = Tags)
 	FGameplayTagContainer BlockedTags;
 
+	bool bIsRunning;
+	
 	UFUNCTION(BlueprintCallable, Category = Action)
 	UARActionComponent* GetOwningComponent() const;
 };

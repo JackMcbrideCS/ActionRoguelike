@@ -35,6 +35,13 @@ bool UARActionComponent::StartActionByName(AActor* Instigator, FName ActionName)
 			continue;
 		}
 
+		if (!Action->CanStart(Instigator))
+		{
+			FString FailedMessage = FString::Printf(TEXT("Failed to run: %s"), *ActionName.ToString());
+			GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FailedMessage);
+			continue;
+		}
+
 		Action->StartAction(Instigator);
 		return true;
 	}
@@ -46,6 +53,11 @@ bool UARActionComponent::StopActionByName(AActor* Instigator, FName ActionName)
 {
 	for (UARAction* Action : Actions)
 	{
+		if (!Action->IsRunning())
+		{
+			continue;
+		}
+		
 		if (!Action || Action->ActionName != ActionName)
 		{
 			continue;
@@ -72,7 +84,7 @@ void UARActionComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAc
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	FString DebugMessage = GetNameSafe(GetOwner()) + " : " + ActiveGameplayTags.ToStringSimple();
+	const FString DebugMessage = FString::Printf(TEXT("%s : %s"), *GetNameSafe(GetOwner()), *ActiveGameplayTags.ToStringSimple());
 	GEngine->AddOnScreenDebugMessage(-1, 0.0f, FColor::White, DebugMessage);
 }
 

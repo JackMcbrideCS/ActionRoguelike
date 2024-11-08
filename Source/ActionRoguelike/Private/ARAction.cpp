@@ -12,3 +12,14 @@ void UARAction::StopAction_Implementation(AActor* Instigator)
 {
 	UE_LOG(LogTemp, Log, TEXT("Stopped: %s"), *GetNameSafe(this));
 }
+
+UWorld* UARAction::GetWorld() const
+{
+	const UActorComponent* Component = Cast<UActorComponent>(GetOuter());
+	if (!ensure(Component))
+	{
+		return nullptr;
+	}
+	
+	return Component->GetWorld();
+}

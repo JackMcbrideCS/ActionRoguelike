@@ -58,27 +58,6 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* SprintAction{nullptr};
 
-	UPROPERTY(EditAnywhere, Category = Attack)
-	TSubclassOf<AActor> PrimaryAttackProjectileClass;
-
-	UPROPERTY(EditAnywhere, Category = Attack)
-	TSubclassOf<AActor> SecondaryAttackProjectileClass;
-
-	UPROPERTY(EditAnywhere, Category = Attack)
-	TSubclassOf<AActor> DodgeProjectileClass;
-
-	UPROPERTY(EditAnywhere, Category = Attack)
-	UAnimMontage* AttackAnimMontage;
-
-	UPROPERTY(EditAnywhere, Category = Attack)
-	FName PrimaryAttackSocket;
-
-	UPROPERTY(EditAnywhere, Category = Attack)
-	FName PrimaryAttackEffectSocket;
-
-	UPROPERTY(EditAnywhere, Category = Attack)
-	UParticleSystem* PrimaryAttackEffect;
-
 public:
 	// Sets default values for this character's properties
 	AARCharacter();
@@ -99,10 +78,6 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components)
 	UARActionComponent* ActionComponent;
-
-	FTimerHandle TimerHandle_PrimaryAttack;
-	FTimerHandle TimerHandle_SecondaryAttack;
-	FTimerHandle TimerHandle_Dodge;
 	
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -112,13 +87,10 @@ protected:
 	void OnSprintStop(const FInputActionValue& Value);
 	void OnLook(const FInputActionValue& Value);
 	void OnPrimaryAttack(const FInputActionValue& Value);
-	void PrimaryAttack_TimerElapsed();
 	void OnSecondaryAttack(const FInputActionValue& Value);
-	void SecondaryAttack_TimerElapsed();
 	void OnJump(const FInputActionValue& Value);
 	void OnInteract(const FInputActionValue& Value);
 	void OnDodge(const FInputActionValue& Value);
-	void Dodge_TimerElapsed();
 
 	UFUNCTION()
 	void OnHealthChanged(AActor* InstigatorActor, UARAttributeComponent* OwningComponent, float NewHealth, float Delta);

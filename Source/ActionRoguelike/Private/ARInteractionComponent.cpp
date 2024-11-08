@@ -23,7 +23,7 @@ void UARInteractionComponent::PrimaryInteract()
 	CollisionShape.SetSphere(Radius);
 	OwnerCharacter->AimSweep(Hits, 1000.0f, ObjectQueryParams, CollisionShape);
 	
-	for(const FHitResult& Hit: Hits)
+	for (const FHitResult& Hit: Hits)
 	{
 		AActor* HitActor = Hit.GetActor();
 		if (!HitActor)

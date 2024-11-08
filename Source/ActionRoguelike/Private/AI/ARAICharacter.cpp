@@ -15,6 +15,8 @@
 #include "Perception/PawnSensingComponent.h"
 #include "UI/ARWorldUserWidget.h"
 
+static TAutoConsoleVariable<bool> CVarDebugDrawPlayerSpotted(TEXT("ar.DebugDrawPlayerSpotted"), false, TEXT("Enable debug draws spotting the player."), ECVF_Cheat);
+
 // Sets default values
 AARAICharacter::AARAICharacter()
 {
@@ -106,5 +108,9 @@ void AARAICharacter::SetTargetActor(AActor* NewTarget) const
 	}
 	
 	AIController->GetBlackboardComponent()->SetValueAsObject(TEXT("TargetActor"), NewTarget);
-	DrawDebugString(GetWorld(), GetActorLocation(), TEXT("Player Spotted!"), nullptr, FColor::Red, 4.0f, true);
+
+	if (CVarDebugDrawPlayerSpotted.GetValueOnGameThread())
+	{
+		DrawDebugString(GetWorld(), GetActorLocation(), TEXT("Player Spotted!"), nullptr, FColor::Red, 4.0f, true);
+	}
 }

@@ -92,69 +92,12 @@ void AARCharacter::OnLook(const FInputActionValue& Value)
 
 void AARCharacter::OnPrimaryAttack(const FInputActionValue& Value)
 {
-	PlayAnimMontage(AttackAnimMontage);
-	UGameplayStatics::SpawnEmitterAttached(PrimaryAttackEffect, GetMesh(), PrimaryAttackEffectSocket);
-	GetWorldTimerManager().SetTimer(TimerHandle_PrimaryAttack, this, &AARCharacter::PrimaryAttack_TimerElapsed, 0.2f);
-}
-
-void AARCharacter::PrimaryAttack_TimerElapsed()
-{
-	const bool bSocketExists = GetMesh()->DoesSocketExist(PrimaryAttackSocket);
-	if (!ensure(bSocketExists))
-	{
-		return;
-	}
-	
-	const FVector SpawnLocation = GetMesh()->GetSocketLocation(PrimaryAttackSocket);
-	
-	FHitResult Hit;
-	FCollisionObjectQueryParams ObjectQueryParams;
-	ObjectQueryParams.AddObjectTypesToQuery(ECC_WorldDynamic);
-	ObjectQueryParams.AddObjectTypesToQuery(ECC_WorldStatic);
-	ObjectQueryParams.AddObjectTypesToQuery(ECC_Pawn);
-	const bool bBlockingHit = AimTrace(Hit, 1000.0f, ObjectQueryParams);
-	
-	const FVector LookAtPosition = bBlockingHit ? Hit.ImpactPoint : Hit.TraceEnd;
-	const FRotator SpawnRotation = UKismetMathLibrary::FindLookAtRotation(SpawnLocation, LookAtPosition);
-	const FTransform SpawnTransform = FTransform(SpawnRotation, SpawnLocation);
-
-	FActorSpawnParameters SpawnParameters;
-	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-	SpawnParameters.Instigator = this;
-	GetWorld()->SpawnActor<AActor>(PrimaryAttackProjectileClass, SpawnTransform, SpawnParameters);
+	ActionComponent->StartActionByName(this, "PrimaryAttack");
 }
 
 void AARCharacter::OnSecondaryAttack(const FInputActionValue& Value)
 {
-	PlayAnimMontage(AttackAnimMontage);
-	GetWorldTimerManager().SetTimer(TimerHandle_SecondaryAttack, this, &AARCharacter::SecondaryAttack_TimerElapsed, 0.2f);
-}
-
-void AARCharacter::SecondaryAttack_TimerElapsed()
-{
-	const bool bSocketExists = GetMesh()->DoesSocketExist(PrimaryAttackSocket);
-	if (!ensure(bSocketExists))
-	{
-		return;
-	}
-	
-	const FVector SpawnLocation = GetMesh()->GetSocketLocation(PrimaryAttackSocket);
-
-	FHitResult Hit;
-	FCollisionObjectQueryParams ObjectQueryParams;
-	ObjectQueryParams.AddObjectTypesToQuery(ECC_WorldDynamic);
-	ObjectQueryParams.AddObjectTypesToQuery(ECC_WorldStatic);
-	ObjectQueryParams.AddObjectTypesToQuery(ECC_Pawn);
-	const bool bBlockingHit = AimTrace(Hit, 1000.0f, ObjectQueryParams);
-	
-	const FVector LookAtPosition = bBlockingHit ? Hit.ImpactPoint : Hit.TraceEnd;
-	const FRotator SpawnRotation = UKismetMathLibrary::FindLookAtRotation(SpawnLocation, LookAtPosition);
-	const FTransform SpawnTransform = FTransform(SpawnRotation, SpawnLocation);
-
-	FActorSpawnParameters SpawnParameters;
-	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-	SpawnParameters.Instigator = this;
-	GetWorld()->SpawnActor<AActor>(SecondaryAttackProjectileClass, SpawnTransform, SpawnParameters);
+	ActionComponent->StartActionByName(this, "SecondaryAttack");
 }
 
 void AARCharacter::OnJump(const FInputActionValue& Value)
@@ -169,35 +112,7 @@ void AARCharacter::OnInteract(const FInputActionValue& Value)
 
 void AARCharacter::OnDodge(const FInputActionValue& Value)
 {
-	PlayAnimMontage(AttackAnimMontage);
-	GetWorldTimerManager().SetTimer(TimerHandle_Dodge, this, &AARCharacter::Dodge_TimerElapsed, 0.2f);
-}
-
-void AARCharacter::Dodge_TimerElapsed()
-{
-	const bool bSocketExists = GetMesh()->DoesSocketExist(PrimaryAttackSocket);
-	if (!ensure(bSocketExists))
-	{
-		return;
-	}
-	
-	const FVector SpawnLocation = GetMesh()->GetSocketLocation(PrimaryAttackSocket);
-
-	FHitResult Hit;
-	FCollisionObjectQueryParams ObjectQueryParams;
-	ObjectQueryParams.AddObjectTypesToQuery(ECC_WorldDynamic);
-	ObjectQueryParams.AddObjectTypesToQuery(ECC_WorldStatic);
-	ObjectQueryParams.AddObjectTypesToQuery(ECC_Pawn);
-	const bool bBlockingHit = AimTrace(Hit, 1000.0f, ObjectQueryParams);
-	
-	const FVector LookAtPosition = bBlockingHit ? Hit.ImpactPoint : Hit.TraceEnd;
-	const FRotator SpawnRotation = UKismetMathLibrary::FindLookAtRotation(SpawnLocation, LookAtPosition);
-	const FTransform SpawnTransform = FTransform(SpawnRotation, SpawnLocation);
-
-	FActorSpawnParameters SpawnParameters;
-	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-	SpawnParameters.Instigator = this;
-	GetWorld()->SpawnActor<AActor>(DodgeProjectileClass, SpawnTransform, SpawnParameters);
+	ActionComponent->StartActionByName(this, "DodgeAttack");
 }
 
 void AARCharacter::OnHealthChanged(AActor* InstigatorActor, UARAttributeComponent* OwningComponent, float NewHealth,

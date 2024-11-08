@@ -61,6 +61,11 @@ bool UARActionComponent::StopActionByName(AActor* Instigator, FName ActionName)
 void UARActionComponent::BeginPlay()
 {
 	Super::BeginPlay();
+
+	for (const TSubclassOf<UARAction> ActionClass : DefaultActions)
+	{
+		AddAction(ActionClass);
+	}
 }
 
 void UARActionComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)

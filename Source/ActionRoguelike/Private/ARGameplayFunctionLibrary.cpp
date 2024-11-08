@@ -32,7 +32,9 @@ bool UARGameplayFunctionLibrary::ApplyDirectionalDamage(AActor* Instigator, AAct
 	UPrimitiveComponent* HitComponent = Hit.GetComponent();
 	if (HitComponent && HitComponent->IsSimulatingPhysics(Hit.BoneName))
 	{
-		HitComponent->AddImpulseAtLocation(-Hit.ImpactNormal * ImpulseStrength, Hit.ImpactPoint, Hit.BoneName);
+		FVector Direction = Hit.TraceEnd - Hit.TraceStart;
+		Direction.Normalize();
+		HitComponent->AddImpulseAtLocation(Direction * ImpulseStrength, Hit.ImpactPoint, Hit.BoneName);
 	}
 
 	return true;

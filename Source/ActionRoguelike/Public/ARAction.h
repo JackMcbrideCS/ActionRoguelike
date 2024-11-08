@@ -3,9 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
 #include "UObject/NoExportTypes.h"
 #include "ARAction.generated.h"
 
+class UARActionComponent;
 /**
  * 
  */
@@ -26,4 +28,15 @@ public:
 	void StopAction(AActor* Instigator);
 	
 	virtual UWorld* GetWorld() const override;
+
+protected:
+
+	UPROPERTY(EditDefaultsOnly, Category = Tags)
+	FGameplayTagContainer GrantsTags;
+	
+	UPROPERTY(EditDefaultsOnly, Category = Tags)
+	FGameplayTagContainer BlockedTags;
+
+	UFUNCTION(BlueprintCallable, Category = Action)
+	UARActionComponent* GetOwningComponent() const;
 };

@@ -6,8 +6,32 @@
 #include "ARCharacter.h"
 #include "ARGameplayInterface.h"
 #include "KismetTraceUtils.h"
+#include "Blueprint/UserWidget.h"
+#include "UI/ARWorldUserWidget.h"
+
+UARInteractionComponent::UARInteractionComponent()
+{
+	PrimaryComponentTick.bCanEverTick = true;
+}
 
 void UARInteractionComponent::PrimaryInteract()
+{
+	if (!FocusedActor)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, "No Focus Actor to Interact");
+		return;
+	}
+	
+	APawn* MyPawn = Cast<APawn>(GetOwner());
+	if(!IARGameplayInterface::Execute_CanInteract(FocusedActor, MyPawn))
+	{
+		return;
+	}
+		
+	IARGameplayInterface::Execute_Interact(FocusedActor, MyPawn);
+}
+
+void UARInteractionComponent::FindBestInteractable()
 {
 	AARCharacter* OwnerCharacter = Cast<AARCharacter>(GetOwner());
 	if (!OwnerCharacter)
@@ -17,12 +41,12 @@ void UARInteractionComponent::PrimaryInteract()
 	
 	TArray<FHitResult> Hits;
 	FCollisionObjectQueryParams ObjectQueryParams;
-	ObjectQueryParams.AddObjectTypesToQuery(ECC_WorldDynamic);
+	ObjectQueryParams.AddObjectTypesToQuery(CollisionChannel);
 	FCollisionShape CollisionShape;
-	const float Radius = 30.0f;
-	CollisionShape.SetSphere(Radius);
-	OwnerCharacter->AimSweep(Hits, 1000.0f, ObjectQueryParams, CollisionShape);
-	
+	CollisionShape.SetSphere(TraceRadius);
+	OwnerCharacter->AimSweep(Hits, TraceLength, ObjectQueryParams, CollisionShape);
+
+	FocusedActor = nullptr;
 	for (const FHitResult& Hit: Hits)
 	{
 		AActor* HitActor = Hit.GetActor();
@@ -36,14 +60,48 @@ void UARInteractionComponent::PrimaryInteract()
 			continue;
 		}
 
-		APawn* MyPawn = Cast<APawn>(GetOwner());
-		if(!IARGameplayInterface::Execute_CanInteract(HitActor, MyPawn))
+		FocusedActor = HitActor;
+		break;
+	}
+
+	if (!FocusedActor)
+	{
+		if (DefaultWidgetInstance)
 		{
-			return;
+			DefaultWidgetInstance->RemoveFromParent();
 		}
-		
-		IARGameplayInterface::Execute_Interact(HitActor, MyPawn);
 		return;
 	}
+
+	if (!DefaultWidgetInstance && ensure(DefaultWidgetClass))
+	{
+		DefaultWidgetInstance = CreateWidget<UARWorldUserWidget>(GetWorld(), DefaultWidgetClass);
+	}
+
+	if (!DefaultWidgetInstance)
+	{
+		return;
+	}
+
+	DefaultWidgetInstance->AttachedActor = FocusedActor;
+	if (DefaultWidgetInstance->IsInViewport())
+	{
+		return;
+	}
+	
+	DefaultWidgetInstance->AddToViewport();
+}
+
+void UARInteractionComponent::TickComponent(float DeltaTime, ELevelTick TickType,
+	FActorComponentTickFunction* ThisTickFunction)
+{
+	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
+	FindBestInteractable();
+}
+
+void UARInteractionComponent::BeginPlay()
+{
+	Super::BeginPlay();
 }
 

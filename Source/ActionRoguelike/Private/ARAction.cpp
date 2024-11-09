@@ -47,7 +47,7 @@ bool UARAction::IsRunning_Implementation() const
 
 UWorld* UARAction::GetWorld() const
 {
-	const UActorComponent* Component = Cast<UActorComponent>(GetOuter());
+	const UActorComponent* Component = GetOwningComponent();
 	if (!ensure(Component))
 	{
 		return nullptr;

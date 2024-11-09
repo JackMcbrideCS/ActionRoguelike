@@ -4,6 +4,7 @@
 #include "Actions/ARAction.h"
 
 #include "Actions/ARActionComponent.h"
+#include "Attributes/ARAttributeComponent.h"
 
 void UARAction::StartAction_Implementation(AActor* Instigator)
 {
@@ -59,4 +60,10 @@ UWorld* UARAction::GetWorld() const
 UARActionComponent* UARAction::GetOwningComponent() const
 {
 	return Cast<UARActionComponent>(GetOuter());
+}
+
+UARAttributeComponent* UARAction::GetOwnerAttributes() const
+{
+	const UARActionComponent* ActionComponent = GetOwningComponent();
+	return ActionComponent->GetOwner()->GetComponentByClass<UARAttributeComponent>();
 }

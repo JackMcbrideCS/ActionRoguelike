@@ -129,6 +129,7 @@ void AARCharacter::OnHealthChanged(AActor* InstigatorActor, UARAttributeComponen
 	}
 	
 	GetMesh()->SetScalarParameterValueOnMaterials(TEXT("HitTime"), GetWorld()->GetTimeSeconds());
+	AttributeComponent->ApplyRageChange(InstigatorActor, -Delta);
 	if (AttributeComponent->IsAlive())
 	{
 		return;

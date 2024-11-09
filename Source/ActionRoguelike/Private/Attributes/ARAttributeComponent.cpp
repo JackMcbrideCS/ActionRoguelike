@@ -16,12 +16,14 @@ UARAttributeComponent::UARAttributeComponent()
 
 	MaxHealth = 100.0f;
 	Health = MaxHealth;
+	Rage = 0.0f;
 }
 
 void UARAttributeComponent::BeginPlay()
 {
 	Super::BeginPlay();
 	Health = MaxHealth;
+	Rage = 0.0f;
 }
 
 UARAttributeComponent* UARAttributeComponent::GetAttributes(const AActor* Actor)
@@ -89,6 +91,20 @@ bool UARAttributeComponent::ApplyHealthChange(AActor* Instigator, float Delta)
 	return true;
 }
 
+bool UARAttributeComponent::ApplyRageChange(AActor* Instigator, float Delta)
+{
+	const float OldRage = Rage;
+	Rage = FMath::Clamp(Rage + Delta, 0.0f, MaxRage);
+	Delta = Rage - OldRage;
+	if (Delta == 0.0f)
+	{
+		return false;
+	}
+	
+	OnRageChanged.Broadcast(Instigator, this, Rage, Delta);
+	return true;
+}
+
 bool UARAttributeComponent::IsAlive() const
 {
 	return Health > 0.0f;
@@ -102,6 +118,16 @@ float UARAttributeComponent::GetMaxHealth() const
 float UARAttributeComponent::GetHealth() const
 {
 	return Health;
+}
+
+float UARAttributeComponent::GetMaxRage() const
+{
+	return MaxRage;
+}
+
+float UARAttributeComponent::GetRage() const
+{
+	return Rage;
 }
 
 bool UARAttributeComponent::Kill(AActor* Instigator)

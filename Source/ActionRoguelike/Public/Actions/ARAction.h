@@ -7,6 +7,7 @@
 #include "UObject/NoExportTypes.h"
 #include "ARAction.generated.h"
 
+class UARAttributeComponent;
 class UARActionComponent;
 /**
  * 
@@ -50,4 +51,7 @@ protected:
 	
 	UFUNCTION(BlueprintCallable, Category = Action)
 	UARActionComponent* GetOwningComponent() const;
+
+	UFUNCTION(BlueprintCallable, Category = Attributes)
+	UARAttributeComponent* GetOwnerAttributes() const;
 };

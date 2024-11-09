@@ -16,19 +16,24 @@ UARInteractionComponent::UARInteractionComponent()
 
 void UARInteractionComponent::PrimaryInteract()
 {
-	if (!FocusedActor)
+	ServerInteract(FocusedActor);
+}
+
+void UARInteractionComponent::ServerInteract_Implementation(AActor* Target)
+{
+	if (!Target)
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, "No Focus Actor to Interact");
 		return;
 	}
 	
 	APawn* MyPawn = Cast<APawn>(GetOwner());
-	if(!IARGameplayInterface::Execute_CanInteract(FocusedActor, MyPawn))
+	if(!IARGameplayInterface::Execute_CanInteract(Target, MyPawn))
 	{
 		return;
 	}
 		
-	IARGameplayInterface::Execute_Interact(FocusedActor, MyPawn);
+	IARGameplayInterface::Execute_Interact(Target, MyPawn);
 }
 
 void UARInteractionComponent::FindBestInteractable()
@@ -97,7 +102,11 @@ void UARInteractionComponent::TickComponent(float DeltaTime, ELevelTick TickType
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	FindBestInteractable();
+	APawn* MyPawn = Cast<APawn>(GetOwner());
+	if (MyPawn->IsLocallyControlled())
+	{
+		FindBestInteractable();
+	}
 }
 
 void UARInteractionComponent::BeginPlay()

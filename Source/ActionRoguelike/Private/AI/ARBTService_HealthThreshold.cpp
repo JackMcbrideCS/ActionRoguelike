@@ -4,7 +4,7 @@
 #include "AI/ARBTService_HealthThreshold.h"
 
 #include "AIController.h"
-#include "ARAttributeComponent.h"
+#include "Attributes/ARAttributeComponent.h"
 #include "BehaviorTree/BlackboardComponent.h"
 
 void UARBTService_HealthThreshold::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)

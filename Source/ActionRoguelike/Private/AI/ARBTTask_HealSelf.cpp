@@ -4,7 +4,7 @@
 #include "AI/ARBTTask_HealSelf.h"
 
 #include "AIController.h"
-#include "ARAttributeComponent.h"
+#include "Attributes/ARAttributeComponent.h"
 
 EBTNodeResult::Type UARBTTask_HealSelf::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {

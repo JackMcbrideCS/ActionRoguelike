@@ -1,9 +1,9 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "ARActionEffect.h"
+#include "Actions/ARActionEffect.h"
 
-#include "ARActionComponent.h"
+#include "Actions/ARActionComponent.h"
 
 UARActionEffect::UARActionEffect()
 {

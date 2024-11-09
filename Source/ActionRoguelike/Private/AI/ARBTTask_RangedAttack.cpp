@@ -4,7 +4,7 @@
 #include "AI/ARBTTask_RangedAttack.h"
 
 #include "AIController.h"
-#include "ARAttributeComponent.h"
+#include "Attributes/ARAttributeComponent.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "GameFramework/Character.h"
 

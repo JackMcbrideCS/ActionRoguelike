@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "ARProjectileBase.h"
+#include "Projectiles/ARProjectileBase.h"
 
 #include "Components/AudioComponent.h"
 #include "Components/SphereComponent.h"

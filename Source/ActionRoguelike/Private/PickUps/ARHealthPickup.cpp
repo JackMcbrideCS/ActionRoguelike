@@ -1,9 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "ARHealthPickup.h"
+#include "PickUps/ARHealthPickup.h"
 
-#include "ARAttributeComponent.h"
+#include "Attributes/ARAttributeComponent.h"
 
 bool AARHealthPickup::CanInteract_Implementation(APawn* InstigatorPawn) const
 {

@@ -3,7 +3,7 @@
 
 #include "ARGameModeBase.h"
 
-#include "ARAttributeComponent.h"
+#include "Attributes/ARAttributeComponent.h"
 #include "ARCharacter.h"
 #include "EngineUtils.h"
 #include "AI/ARAICharacter.h"

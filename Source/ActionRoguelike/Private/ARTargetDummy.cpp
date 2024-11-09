@@ -3,7 +3,7 @@
 
 #include "ARTargetDummy.h"
 
-#include "ARAttributeComponent.h"
+#include "Attributes/ARAttributeComponent.h"
 
 // Sets default values
 AARTargetDummy::AARTargetDummy()

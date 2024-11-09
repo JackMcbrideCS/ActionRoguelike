@@ -1,10 +1,10 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "ARAction_ProjectileAttack.h"
+#include "Actions/ARAction_ProjectileAttack.h"
 
 #include "ARCharacter.h"
-#include "ARProjectileBase.h"
+#include "Projectiles/ARProjectileBase.h"
 #include "GameFramework/Character.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"

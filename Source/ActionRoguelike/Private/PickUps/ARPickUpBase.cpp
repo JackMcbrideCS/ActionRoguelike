@@ -1,9 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "ARPickUpBase.h"
+#include "PickUps/ARPickUpBase.h"
 
-#include "ARAttributeComponent.h"
+#include "Attributes/ARAttributeComponent.h"
 #include "ARCharacter.h"
 #include "ARPlayerState.h"
 

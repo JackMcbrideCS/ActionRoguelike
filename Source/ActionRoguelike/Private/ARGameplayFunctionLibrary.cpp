@@ -3,7 +3,7 @@
 
 #include "ARGameplayFunctionLibrary.h"
 
-#include "ARAttributeComponent.h"
+#include "Attributes/ARAttributeComponent.h"
 
 bool UARGameplayFunctionLibrary::ApplyDamage(AActor* Instigator, AActor* TargetActor, float DamageAmount)
 {

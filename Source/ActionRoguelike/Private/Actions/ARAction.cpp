@@ -1,9 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "ARAction.h"
+#include "Actions/ARAction.h"
 
-#include "ARActionComponent.h"
+#include "Actions/ARActionComponent.h"
 
 void UARAction::StartAction_Implementation(AActor* Instigator)
 {

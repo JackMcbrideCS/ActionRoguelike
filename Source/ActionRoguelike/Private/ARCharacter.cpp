@@ -3,8 +3,8 @@
 
 #include "ARCharacter.h"
 
-#include "ARActionComponent.h"
-#include "ARAttributeComponent.h"
+#include "Actions/ARActionComponent.h"
+#include "Attributes/ARAttributeComponent.h"
 #include "ARInteractionComponent.h"
 #include "DrawDebugHelpers.h"
 #include "EnhancedInputComponent.h"

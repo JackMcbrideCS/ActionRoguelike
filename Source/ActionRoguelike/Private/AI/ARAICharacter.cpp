@@ -4,8 +4,8 @@
 #include "AI/ARAICharacter.h"
 
 #include "AIController.h"
-#include "ARActionComponent.h"
-#include "ARAttributeComponent.h"
+#include "Actions/ARActionComponent.h"
+#include "Attributes/ARAttributeComponent.h"
 #include "ARCharacter.h"
 #include "ARPlayerState.h"
 #include "BrainComponent.h"

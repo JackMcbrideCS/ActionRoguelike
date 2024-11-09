@@ -8,6 +8,7 @@
 #include "GameFramework/Actor.h"
 #include "ARMagicProjectile.generated.h"
 
+class UARActionEffect;
 class UParticleSystemComponent;
 
 UCLASS()
@@ -23,6 +24,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UCameraShakeBase> ExplodeCameraShake;
+
+	UPROPERTY(EditDefaultsOnly)
+	TArray<TSubclassOf<UARActionEffect>> AppliedEffectClasses;
 
 	UPROPERTY(EditDefaultsOnly)
 	float Damage;

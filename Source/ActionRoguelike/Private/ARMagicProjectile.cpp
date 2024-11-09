@@ -3,13 +3,12 @@
 
 #include "ARMagicProjectile.h"
 
+#include "ARActionEffect.h"
 #include "ARActionComponent.h"
 #include "ARAttributeComponent.h"
 #include "ARGameplayFunctionLibrary.h"
-#include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
-#include "Particles/ParticleSystemComponent.h"
 
 // Sets default values
 AARMagicProjectile::AARMagicProjectile()
@@ -49,6 +48,13 @@ void AARMagicProjectile::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent
 	}
 
 	UARGameplayFunctionLibrary::ApplyDirectionalDamage(GetInstigator(), OtherActor, Damage, DamageImpulseStrength, SweepResult);
+	if (ActionComponent)
+	{
+		for (TSubclassOf<UARActionEffect> AppliedEffectClass : AppliedEffectClasses)
+		{
+			ActionComponent->AddAction(GetInstigator(), AppliedEffectClass);
+		}
+	}
 	Super::OnBeginOverlap(OverlappedComponent, OtherActor, OtherComp, OtherBodyIndex, bFromSweep, SweepResult);
 }
 

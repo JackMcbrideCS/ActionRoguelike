@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "ARAICharacter.generated.h"
 
+class UARActionComponent;
 class UARWorldUserWidget;
 class UWidget;
 class UARAttributeComponent;
@@ -28,12 +29,16 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = Components)
 	UARAttributeComponent* AttributeComponent;
 
+	UPROPERTY(VisibleAnywhere, Category = Components)
+	UARActionComponent* ActionComponent;
+
 	UPROPERTY(EditDefaultsOnly, Category = UI)
 	TSubclassOf<UUserWidget> HealthBarWidgetClass;
 
 	UPROPERTY(EditDefaultsOnly)
 	int32 CreditGainOnKill;
 
+	UPROPERTY()
 	UARWorldUserWidget* HealthBarWidget;
 
 	UFUNCTION()

@@ -3,9 +3,11 @@
 
 #include "ARMagicProjectile.h"
 
+#include "ARActionComponent.h"
 #include "ARAttributeComponent.h"
 #include "ARGameplayFunctionLibrary.h"
 #include "Components/SphereComponent.h"
+#include "GameFramework/ProjectileMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Particles/ParticleSystemComponent.h"
 
@@ -30,6 +32,14 @@ void AARMagicProjectile::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent
 {
 	if (!OtherActor)
 	{
+		return;
+	}
+
+	UARActionComponent* ActionComponent = OtherActor->GetComponentByClass<UARActionComponent>();
+	if (ActionComponent && ActionComponent->ActiveGameplayTags.HasTag(ParryTag))
+	{
+		MovementComponent->Velocity = -MovementComponent->Velocity;
+		SetInstigator(Cast<APawn>(OtherActor));
 		return;
 	}
 

@@ -4,6 +4,7 @@
 #include "AI/ARAICharacter.h"
 
 #include "AIController.h"
+#include "ARActionComponent.h"
 #include "ARAttributeComponent.h"
 #include "ARCharacter.h"
 #include "ARPlayerState.h"
@@ -22,6 +23,7 @@ AARAICharacter::AARAICharacter()
 {
 	PawnSensingComponent = CreateDefaultSubobject<UPawnSensingComponent>("Pawn Sensing Component");
 	AttributeComponent = CreateDefaultSubobject<UARAttributeComponent>("Attribute Component");
+	ActionComponent = CreateDefaultSubobject<UARActionComponent>("Action Component");
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_WorldDynamic, ECR_Ignore);
 	GetMesh()->SetGenerateOverlapEvents(true);
 	CreditGainOnKill = 10;

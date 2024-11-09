@@ -115,8 +115,13 @@ void AARCharacter::OnDodge(const FInputActionValue& Value)
 	ActionComponent->StartActionByName(this, "DodgeAttack");
 }
 
+void AARCharacter::OnParry(const FInputActionValue& Value)
+{
+	ActionComponent->StartActionByName(this, "Parry");
+}
+
 void AARCharacter::OnHealthChanged(AActor* InstigatorActor, UARAttributeComponent* OwningComponent, float NewHealth,
-	float Delta)
+                                   float Delta)
 {
 	if (Delta >= 0)
 	{
@@ -198,6 +203,7 @@ void AARCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	EnhancedInputComponent->BindAction(DodgeAction, ETriggerEvent::Started, this, &AARCharacter::OnDodge);
 	EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Started, this, &AARCharacter::OnSprintStart);
 	EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Completed, this, &AARCharacter::OnSprintStop);
+	EnhancedInputComponent->BindAction(ParryAction, ETriggerEvent::Started, this, &AARCharacter::OnParry);
 }
 
 void AARCharacter::DrawDebugRotationArrows() const

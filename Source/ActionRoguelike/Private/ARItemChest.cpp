@@ -3,6 +3,8 @@
 
 #include "ARItemChest.h"
 
+#include "Net/UnrealNetwork.h"
+
 
 bool AARItemChest::CanInteract_Implementation(APawn* InstigatorPawn) const
 {
@@ -11,7 +13,8 @@ bool AARItemChest::CanInteract_Implementation(APawn* InstigatorPawn) const
 
 void AARItemChest::Interact_Implementation(APawn* InstigatorPawn)
 {
-	LidMesh->SetRelativeRotation(FRotator(TargetPitch, 0, 0));
+	bLidOpen = !bLidOpen;
+	OnRep_LidOpened();
 }
 
 // Sets default values
@@ -27,5 +30,20 @@ AARItemChest::AARItemChest()
 	LidMesh->SetupAttachment(BaseMesh);
 
 	TargetPitch = 110.0f;
+
+	SetReplicates(true);
+}
+
+void AARItemChest::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(AARItemChest, bLidOpen);
+}
+
+void AARItemChest::OnRep_LidOpened()
+{
+	const float CurrentPitch = bLidOpen ? TargetPitch : 0.0f;
+	LidMesh->SetRelativeRotation(FRotator(CurrentPitch, 0, 0));
 }
 

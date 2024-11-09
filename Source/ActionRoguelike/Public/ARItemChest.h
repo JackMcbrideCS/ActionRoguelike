@@ -21,6 +21,8 @@ public:
 	
 	// Sets default values for this actor's properties
 	AARItemChest();
+	
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 protected:
 	UPROPERTY(VisibleAnywhere)
@@ -28,4 +30,10 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UStaticMeshComponent* LidMesh;
+
+	UPROPERTY(ReplicatedUsing = "OnRep_LidOpened", Replicated)
+	bool bLidOpen;
+
+	UFUNCTION()
+	void OnRep_LidOpened();
 };

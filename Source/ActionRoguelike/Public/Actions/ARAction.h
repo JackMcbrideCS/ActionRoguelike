@@ -54,4 +54,7 @@ protected:
 
 	UFUNCTION(BlueprintCallable, Category = Attributes)
 	UARAttributeComponent* GetOwnerAttributes() const;
+
+	UFUNCTION(BlueprintCallable, Category = Attributes)
+	AActor* GetOwner() const;
 };

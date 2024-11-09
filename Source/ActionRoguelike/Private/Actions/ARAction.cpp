@@ -64,6 +64,10 @@ UARActionComponent* UARAction::GetOwningComponent() const
 
 UARAttributeComponent* UARAction::GetOwnerAttributes() const
 {
-	const UARActionComponent* ActionComponent = GetOwningComponent();
-	return ActionComponent->GetOwner()->GetComponentByClass<UARAttributeComponent>();
+	return UARAttributeComponent::GetAttributes(GetOwner());
+}
+
+AActor* UARAction::GetOwner() const
+{
+	return GetOwningComponent()->GetOwner();
 }

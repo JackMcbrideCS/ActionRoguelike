@@ -6,9 +6,20 @@
 #include "GameFramework/SaveGame.h"
 #include "ARSaveGame.generated.h"
 
-/**
- * 
- */
+USTRUCT()
+struct FActorSaveData
+{
+	GENERATED_BODY()
+
+public:
+
+	UPROPERTY()
+	FString ActorName;
+
+	UPROPERTY()
+	FTransform ActorTransform;
+};
+
 UCLASS()
 class ACTIONROGUELIKE_API UARSaveGame : public USaveGame
 {
@@ -17,4 +28,7 @@ class ACTIONROGUELIKE_API UARSaveGame : public USaveGame
 public:
 	UPROPERTY()
 	int32 Credits;
+
+	UPROPERTY()
+	TArray<FActorSaveData> SavedActors;
 };

@@ -5,6 +5,7 @@
 
 #include "Attributes/ARAttributeComponent.h"
 #include "ARCharacter.h"
+#include "ARGameplayInterface.h"
 #include "ARPlayerState.h"
 #include "ARSaveGame.h"
 #include "EngineUtils.h"
@@ -164,19 +165,55 @@ void AARGameModeBase::WriteSaveGame()
 		PlayerState->SavePlayerState(CurrentSaveGame);
 		break;
 	}
+
+	CurrentSaveGame->SavedActors.Empty();
+	for (FActorIterator It(GetWorld()); It; ++It)
+	{
+		AActor* Actor = *It;
+		if (!Actor->Implements<UARGameplayInterface>())
+		{
+			continue;
+		}
+
+		FActorSaveData ActorData;
+		ActorData.ActorName = Actor->GetName();
+		ActorData.ActorTransform = Actor->GetActorTransform();
+
+		CurrentSaveGame->SavedActors.Add(ActorData);
+	}
 	
 	UGameplayStatics::SaveGameToSlot(CurrentSaveGame, SlotName, 0);
 }
 
 void AARGameModeBase::LoadSaveGame()
 {
-	if (UGameplayStatics::DoesSaveGameExist(SlotName, 0))
-	{
-		CurrentSaveGame = Cast<UARSaveGame>(UGameplayStatics::LoadGameFromSlot(SlotName, 0));
-		ensure(CurrentSaveGame);
-	}
-	else
+	if (!UGameplayStatics::DoesSaveGameExist(SlotName, 0))
 	{
 		CurrentSaveGame = Cast<UARSaveGame>(UGameplayStatics::CreateSaveGameObject(UARSaveGame::StaticClass()));
+		return;
+	}
+	
+	CurrentSaveGame = Cast<UARSaveGame>(UGameplayStatics::LoadGameFromSlot(SlotName, 0));
+	if (!ensure(CurrentSaveGame))
+	{
+		return;
+	}
+	
+	for (FActorIterator It(GetWorld()); It; ++It)
+	{
+		AActor* Actor = *It;
+		if (!Actor->Implements<UARGameplayInterface>())
+		{
+			continue;
+		}
+
+		for (const FActorSaveData& ActorData : CurrentSaveGame->SavedActors)
+		{
+			if (ActorData.ActorName == Actor->GetName())
+			{
+				Actor->SetActorTransform(ActorData.ActorTransform);
+				break;
+			}
+		}
 	}
 }

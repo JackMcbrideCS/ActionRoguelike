@@ -4,6 +4,7 @@
 #include "Attributes/ARAttributeComponent.h"
 
 #include "ARGameModeBase.h"
+#include "Net/UnrealNetwork.h"
 
 static TAutoConsoleVariable<float> CVarDamageMultiplier(TEXT("ar.DamageMultiplier"), 1.0f, TEXT("Global Damage Modifier for Attribute Components."), ECVF_Cheat);
 
@@ -17,6 +18,8 @@ UARAttributeComponent::UARAttributeComponent()
 	MaxHealth = 100.0f;
 	Health = MaxHealth;
 	Rage = 0.0f;
+
+	SetIsReplicatedByDefault(true);
 }
 
 void UARAttributeComponent::BeginPlay()
@@ -58,6 +61,16 @@ bool UARAttributeComponent::KillActor(AActor* Instigator, AActor* Actor)
 	return AttributeComponent->Kill(Instigator);
 }
 
+void UARAttributeComponent::MultiCastHealthChanged_Implementation(AActor* Instigator, float NewHealth, float Delta)
+{
+	OnHealthChanged.Broadcast(Instigator, this, NewHealth, Delta);
+}
+
+void UARAttributeComponent::MultiCastRageChanged_Implementation(AActor* Instigator, float NewRage, float Delta)
+{
+	OnRageChanged.Broadcast(Instigator, this, NewRage, Delta);
+}
+
 bool UARAttributeComponent::ApplyHealthChange(AActor* Instigator, float Delta)
 {
 	if (!GetOwner()->CanBeDamaged() && Delta < 0.0f)
@@ -87,7 +100,7 @@ bool UARAttributeComponent::ApplyHealthChange(AActor* Instigator, float Delta)
 		}
 	}
 	
-	OnHealthChanged.Broadcast(Instigator, this, Health, Delta);
+	MultiCastHealthChanged(Instigator, Health, Delta);
 	return true;
 }
 
@@ -101,7 +114,7 @@ bool UARAttributeComponent::ApplyRageChange(AActor* Instigator, float Delta)
 		return false;
 	}
 	
-	OnRageChanged.Broadcast(Instigator, this, Rage, Delta);
+	MultiCastRageChanged(Instigator, Rage, Delta);
 	return true;
 }
 
@@ -133,5 +146,13 @@ float UARAttributeComponent::GetRage() const
 bool UARAttributeComponent::Kill(AActor* Instigator)
 {
 	return ApplyHealthChange(Instigator, -MaxHealth);
+}
+
+void UARAttributeComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(UARAttributeComponent, Health);
+	DOREPLIFETIME(UARAttributeComponent, MaxHealth);
 }
 

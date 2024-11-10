@@ -29,10 +29,10 @@ public:
 
 protected:
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Attributes)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Replicated, Category = Attributes)
 	float MaxHealth;
 
-	UPROPERTY(BlueprintReadOnly, Category = Attributes)
+	UPROPERTY(BlueprintReadOnly, Replicated, Category = Attributes)
 	float Health;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Attributes)
@@ -40,6 +40,12 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, Category = Attributes)
 	float Rage;
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MultiCastHealthChanged(AActor* Instigator, float NewHealth, float Delta);
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MultiCastRageChanged(AActor* Instigator, float NewRage, float Delta);
 	
 public:
 
@@ -71,4 +77,6 @@ public:
 	float GetRage() const;
 
 	bool Kill(AActor* Instigator);
+	
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 };

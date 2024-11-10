@@ -36,6 +36,9 @@ public:
 
 protected:
 
+	UFUNCTION(Server, Reliable)
+	void ServerStartAction(AActor* Instigator, FName ActionName);
+	
 	UPROPERTY()
 	TArray<UARAction*> Actions;
 

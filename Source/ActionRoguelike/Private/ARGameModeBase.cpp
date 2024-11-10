@@ -5,10 +5,12 @@
 
 #include "Attributes/ARAttributeComponent.h"
 #include "ARCharacter.h"
+#include "ARPlayerState.h"
 #include "ARSaveGame.h"
 #include "EngineUtils.h"
 #include "AI/ARAICharacter.h"
 #include "EnvironmentQuery/EnvQueryManager.h"
+#include "GameFramework/GameStateBase.h"
 #include "Kismet/GameplayStatics.h"
 
 static TAutoConsoleVariable<bool> CVarSpawnBots(TEXT("ar.SpawnBots"), true, TEXT("Enable spawning of bots via timer."), ECVF_Cheat);
@@ -123,6 +125,19 @@ void AARGameModeBase::InitGame(const FString& MapName, const FString& Options, F
 	LoadSaveGame();
 }
 
+void AARGameModeBase::HandleStartingNewPlayer_Implementation(APlayerController* NewPlayer)
+{
+	Super::HandleStartingNewPlayer_Implementation(NewPlayer);
+
+	AARPlayerState* PlayerState = NewPlayer->GetPlayerState<AARPlayerState>();
+	if (!ensure(PlayerState))
+	{
+		return;
+	}
+
+	PlayerState->LoadPlayerState(CurrentSaveGame);
+}
+
 void AARGameModeBase::KillAllBots()
 {
 	for (TActorIterator<AARAICharacter> It(GetWorld()); It; ++It)
@@ -138,6 +153,18 @@ void AARGameModeBase::KillAllBots()
 
 void AARGameModeBase::WriteSaveGame()
 {
+	for (int32 i = 0; i < GameState->PlayerArray.Num(); i++)
+	{
+		AARPlayerState* PlayerState = Cast<AARPlayerState>(GameState->PlayerArray[i]);
+		if (!PlayerState)
+		{
+			return;
+		}
+
+		PlayerState->SavePlayerState(CurrentSaveGame);
+		break;
+	}
+	
 	UGameplayStatics::SaveGameToSlot(CurrentSaveGame, SlotName, 0);
 }
 

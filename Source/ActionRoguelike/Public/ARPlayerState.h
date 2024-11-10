@@ -6,7 +6,9 @@
 #include "GameFramework/PlayerState.h"
 #include "ARPlayerState.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnCreditsChanged, AARPlayerState*, OwningPlayerState, int32, NewAmount, int32, Delta);
+class UARSaveGame;
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnCreditsChanged, AARPlayerState*, OwningPlayerState, int32, NewAmount,
+                                               int32, Delta);
 
 UCLASS()
 class ACTIONROGUELIKE_API AARPlayerState : public APlayerState
@@ -20,6 +22,12 @@ public:
 	
 	UFUNCTION(NetMulticast, Reliable)
 	void MultiCastCreditsChanged(int32 NewAmount, int32 Delta);
+
+	UFUNCTION(BlueprintNativeEvent)
+	void SavePlayerState(UARSaveGame* SaveGame);
+	
+	UFUNCTION(BlueprintNativeEvent)
+	void LoadPlayerState(UARSaveGame* SaveGame);
 	
 	bool HasEnoughCredits(int32 Amount);
 	void GainCredits(int32 Amount);

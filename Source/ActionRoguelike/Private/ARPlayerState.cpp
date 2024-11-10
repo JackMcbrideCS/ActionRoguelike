@@ -3,6 +3,7 @@
 
 #include "ARPlayerState.h"
 
+#include "ARSaveGame.h"
 #include "Net/UnrealNetwork.h"
 
 void AARPlayerState::MultiCastCreditsChanged_Implementation(int32 NewAmount, int32 Delta)
@@ -48,4 +49,24 @@ void AARPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLi
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	
 	DOREPLIFETIME(AARPlayerState, Credits);
+}
+
+void AARPlayerState::SavePlayerState_Implementation(UARSaveGame* SaveGame)
+{
+	if (!SaveGame)
+	{
+		return;
+	}
+	
+	SaveGame->Credits = Credits;
+}
+
+void AARPlayerState::LoadPlayerState_Implementation(UARSaveGame* SaveGame)
+{
+	if (!SaveGame)
+	{
+		return;
+	}
+	
+	Credits = SaveGame->Credits;
 }

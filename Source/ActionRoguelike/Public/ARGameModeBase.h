@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "ARSaveGame.h"
 #include "EnvironmentQuery/EnvQueryTypes.h"
 #include "GameFramework/GameModeBase.h"
 #include "ARGameModeBase.generated.h"
@@ -33,7 +34,11 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = Player)
 	float RespawnDelay;
 
+	UPROPERTY()
+	UARSaveGame* CurrentSaveGame;
+
 	FTimerHandle TimerHandle_SpawnBots;
+	FString SlotName;
 
 	UFUNCTION()
 	void OnSpawnBotQueryCompleted(UEnvQueryInstanceBlueprintWrapper* QueryInstance, EEnvQueryStatus::Type QueryStatus);
@@ -49,10 +54,16 @@ protected:
 public:
 	
 	AARGameModeBase();
-
-	virtual void StartPlay() override;
-	virtual void OnActorKilled(AActor* KillInstigator, AActor* Killed);
+	
+	UFUNCTION(BlueprintCallable, Category = SaveGame)
+	void WriteSaveGame();
 
 	UFUNCTION(Exec)
 	void KillAllBots();
+	
+	void LoadSaveGame();
+
+	virtual void StartPlay() override;
+	virtual void OnActorKilled(AActor* KillInstigator, AActor* Killed);
+	virtual void InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage) override;
 };

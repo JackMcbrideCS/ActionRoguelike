@@ -3,6 +3,7 @@
 
 #include "ARCharacter.h"
 
+#include "ARGameModeBase.h"
 #include "Actions/ARActionComponent.h"
 #include "Attributes/ARAttributeComponent.h"
 #include "ARInteractionComponent.h"
@@ -102,6 +103,11 @@ void AARCharacter::OnDodge(const FInputActionValue& Value)
 void AARCharacter::OnParry(const FInputActionValue& Value)
 {
 	ActionComponent->StartActionByName(this, "Parry");
+}
+
+void AARCharacter::OnQuickSave(const FInputActionValue& Value)
+{
+	Cast<AARGameModeBase>(UGameplayStatics::GetGameMode(this))->WriteSaveGame();
 }
 
 void AARCharacter::OnHealthChanged(AActor* InstigatorActor, UARAttributeComponent* OwningComponent, float NewHealth,
@@ -206,6 +212,7 @@ void AARCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Started, this, &AARCharacter::OnSprintStart);
 	EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Completed, this, &AARCharacter::OnSprintStop);
 	EnhancedInputComponent->BindAction(ParryAction, ETriggerEvent::Started, this, &AARCharacter::OnParry);
+	EnhancedInputComponent->BindAction(QuickSaveAction, ETriggerEvent::Started, this, &AARCharacter::OnQuickSave);
 }
 
 void AARCharacter::PostInitializeComponents()

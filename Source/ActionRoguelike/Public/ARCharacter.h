@@ -60,6 +60,9 @@ protected:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* ParryAction{nullptr};
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* QuickSaveAction{nullptr};
 
 public:
 	// Sets default values for this character's properties
@@ -95,6 +98,7 @@ protected:
 	void OnInteract(const FInputActionValue& Value);
 	void OnDodge(const FInputActionValue& Value);
 	void OnParry(const FInputActionValue& Value);
+	void OnQuickSave(const FInputActionValue& Value);
 
 	UFUNCTION()
 	void OnHealthChanged(AActor* InstigatorActor, UARAttributeComponent* OwningComponent, float NewHealth, float Delta);

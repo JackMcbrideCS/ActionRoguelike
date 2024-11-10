@@ -5,9 +5,11 @@
 
 #include "Attributes/ARAttributeComponent.h"
 #include "ARCharacter.h"
+#include "ARSaveGame.h"
 #include "EngineUtils.h"
 #include "AI/ARAICharacter.h"
 #include "EnvironmentQuery/EnvQueryManager.h"
+#include "Kismet/GameplayStatics.h"
 
 static TAutoConsoleVariable<bool> CVarSpawnBots(TEXT("ar.SpawnBots"), true, TEXT("Enable spawning of bots via timer."), ECVF_Cheat);
 
@@ -92,6 +94,7 @@ AARGameModeBase::AARGameModeBase()
 {
 	SpawnTimerInterval = 2.0f;
 	RespawnDelay = 2.0f;
+	SlotName = TEXT("SaveGame01");
 }
 
 void AARGameModeBase::StartPlay()
@@ -113,6 +116,13 @@ void AARGameModeBase::OnActorKilled(AActor* KillInstigator, AActor* Killed)
 	}
 }
 
+void AARGameModeBase::InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage)
+{
+	Super::InitGame(MapName, Options, ErrorMessage);
+
+	LoadSaveGame();
+}
+
 void AARGameModeBase::KillAllBots()
 {
 	for (TActorIterator<AARAICharacter> It(GetWorld()); It; ++It)
@@ -123,5 +133,23 @@ void AARGameModeBase::KillAllBots()
 		}
 		
 		UARAttributeComponent::KillActor(this, *It);
+	}
+}
+
+void AARGameModeBase::WriteSaveGame()
+{
+	UGameplayStatics::SaveGameToSlot(CurrentSaveGame, SlotName, 0);
+}
+
+void AARGameModeBase::LoadSaveGame()
+{
+	if (UGameplayStatics::DoesSaveGameExist(SlotName, 0))
+	{
+		CurrentSaveGame = Cast<UARSaveGame>(UGameplayStatics::LoadGameFromSlot(SlotName, 0));
+		ensure(CurrentSaveGame);
+	}
+	else
+	{
+		CurrentSaveGame = Cast<UARSaveGame>(UGameplayStatics::CreateSaveGameObject(UARSaveGame::StaticClass()));
 	}
 }

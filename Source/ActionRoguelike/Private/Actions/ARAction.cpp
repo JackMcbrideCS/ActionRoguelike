@@ -3,12 +3,15 @@
 
 #include "Actions/ARAction.h"
 
+#include "ActionRoguelike/ActionRoguelike.h"
 #include "Actions/ARActionComponent.h"
 #include "Attributes/ARAttributeComponent.h"
+#include "Net/UnrealNetwork.h"
 
 void UARAction::StartAction_Implementation(AActor* Instigator)
 {
 	UE_LOG(LogTemp, Log, TEXT("Running: %s"), *GetNameSafe(this));
+	LogOnScreen(this, FString::Printf(TEXT("Running: %s"), *ActionName.ToString()), FColor::Blue);
 
 	UARActionComponent* ActionComponent = GetOwningComponent();
 	ActionComponent->ActiveGameplayTags.AppendTags(GrantsTags);
@@ -17,12 +20,11 @@ void UARAction::StartAction_Implementation(AActor* Instigator)
 
 void UARAction::StopAction_Implementation(AActor* Instigator)
 {
-	ensureAlways(bIsRunning);
 	UARActionComponent* ActionComponent = GetOwningComponent();
 	ActionComponent->ActiveGameplayTags.RemoveTags(GrantsTags);
 	bIsRunning = false;
 
-	UE_LOG(LogTemp, Log, TEXT("Stopped: %s"), *GetNameSafe(this));
+	LogOnScreen(this, FString::Printf(TEXT("Stopped: %s"), *ActionName.ToString()), FColor::White);
 }
 
 bool UARAction::CanStart_Implementation(AActor* Instigator) const
@@ -57,6 +59,18 @@ UWorld* UARAction::GetWorld() const
 	return Component->GetWorld();
 }
 
+void UARAction::OnRep_IsRunning()
+{
+	if (bIsRunning)
+	{
+		StartAction(nullptr);
+	}
+	else
+	{
+		StopAction(nullptr);
+	}
+}
+
 UARActionComponent* UARAction::GetOwningComponent() const
 {
 	return Cast<UARActionComponent>(GetOuter());
@@ -70,4 +84,11 @@ UARAttributeComponent* UARAction::GetOwnerAttributes() const
 AActor* UARAction::GetOwner() const
 {
 	return GetOwningComponent()->GetOwner();
+}
+
+void UARAction::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	UObject::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(UARAction, bIsRunning);
 }

@@ -47,7 +47,11 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = Tags)
 	FGameplayTagContainer BlockedTags;
 
+	UPROPERTY(ReplicatedUsing = "OnRep_IsRunning")
 	bool bIsRunning;
+
+	UFUNCTION()
+	void OnRep_IsRunning();
 	
 	UFUNCTION(BlueprintCallable, Category = Action)
 	UARActionComponent* GetOwningComponent() const;
@@ -57,4 +61,8 @@ protected:
 
 	UFUNCTION(BlueprintCallable, Category = Attributes)
 	AActor* GetOwner() const;
+
+public:
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+	virtual bool IsSupportedForNetworking() const override { return true; }
 };

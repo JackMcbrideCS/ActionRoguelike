@@ -3,7 +3,10 @@
 
 #include "Actions/ARActionComponent.h"
 
+#include "ActionRoguelike/ActionRoguelike.h"
 #include "Actions/ARAction.h"
+#include "Engine/ActorChannel.h"
+#include "Net/UnrealNetwork.h"
 
 UARActionComponent::UARActionComponent()
 {
@@ -100,9 +103,12 @@ void UARActionComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	for (const TSubclassOf<UARAction> ActionClass : DefaultActions)
+	if (GetOwner()->HasAuthority())
 	{
-		AddAction(GetOwner(), ActionClass);
+		for (const TSubclassOf<UARAction> ActionClass : DefaultActions)
+		{
+			AddAction(GetOwner(), ActionClass);
+		}
 	}
 }
 
@@ -110,7 +116,40 @@ void UARActionComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAc
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	const FString DebugMessage = FString::Printf(TEXT("%s : %s"), *GetNameSafe(GetOwner()), *ActiveGameplayTags.ToStringSimple());
-	GEngine->AddOnScreenDebugMessage(-1, 0.0f, FColor::White, DebugMessage);
+	//const FString DebugMessage = FString::Printf(TEXT("%s : %s"), *GetNameSafe(GetOwner()), *ActiveGameplayTags.ToStringSimple());
+	//GEngine->AddOnScreenDebugMessage(-1, 0.0f, FColor::White, DebugMessage);
+
+	for (UARAction* Action : Actions)
+	{
+		FColor TextColour = Action->IsRunning() ? FColor::Blue : FColor::White;
+		FString ActionMessage = FString::Printf(TEXT("[%s] Action: %s : IsRunning: %s : Outer: %s"),
+			*GetNameSafe(GetOwner()),
+			*Action->ActionName.ToString(),
+			Action->IsRunning() ? TEXT("true") : TEXT("false"),
+			*GetNameSafe(GetOuter()));
+
+		LogOnScreen(this, ActionMessage, TextColour, 0.0f);
+	}
+}
+
+void UARActionComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(UARActionComponent, Actions);
+}
+
+bool UARActionComponent::ReplicateSubobjects(UActorChannel* Channel, FOutBunch* Bunch, FReplicationFlags* RepFlags)
+{
+	bool WroteSomething = Super::ReplicateSubobjects(Channel, Bunch, RepFlags);
+	for (UARAction* Action : Actions)
+	{
+		if (Action)
+		{
+			WroteSomething |= Channel->ReplicateSubobject(Action, *Bunch, *RepFlags);
+		}
+	}
+
+	return WroteSomething;
 }
 

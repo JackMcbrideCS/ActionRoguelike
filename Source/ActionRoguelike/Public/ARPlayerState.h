@@ -18,11 +18,16 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FOnCreditsChanged OnCreditsChanged;
 	
+	UFUNCTION(NetMulticast, Reliable)
+	void MultiCastCreditsChanged(int32 NewAmount, int32 Delta);
+	
 	bool HasEnoughCredits(int32 Amount);
 	void GainCredits(int32 Amount);
 	bool SpendCredits(int32 Amount);
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 protected:
 
+	UPROPERTY(BlueprintReadOnly, Replicated)
 	int32 Credits;
 };

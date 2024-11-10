@@ -32,13 +32,21 @@ protected:
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	int32 PickUpCreditGain;
+
+	UPROPERTY(ReplicatedUsing = "OnRep_IsActive")
+	bool bIsActive = true;
 	
 	FTimerHandle TimerHandle_Respawn;
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 	void ApplyEffect(APawn* Pawn);
-
+	
+	UFUNCTION()
+	void OnRep_IsActive();
+	
 	virtual void Respawn();
+	void SetActive(bool bNewIsActive);
 
-	void SetActive(bool bIsActive);
+public:
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 };

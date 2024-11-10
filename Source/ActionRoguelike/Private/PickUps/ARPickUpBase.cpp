@@ -6,6 +6,7 @@
 #include "Attributes/ARAttributeComponent.h"
 #include "ARCharacter.h"
 #include "ARPlayerState.h"
+#include "Net/UnrealNetwork.h"
 
 void AARPickUpBase::Interact_Implementation(APawn* InstigatorPawn)
 {
@@ -23,7 +24,7 @@ AARPickUpBase::AARPickUpBase()
 	MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>("Mesh Component");
 	RootComponent = MeshComponent;
 
-	SetReplicates(true);
+	bReplicates = true;
 }
 
 bool AARPickUpBase::CanInteract_Implementation(APawn* InstigatorPawn) const
@@ -37,15 +38,28 @@ bool AARPickUpBase::CanInteract_Implementation(APawn* InstigatorPawn) const
 	return true;
 }
 
+void AARPickUpBase::OnRep_IsActive()
+{
+	RootComponent->SetVisibility(bIsActive);
+	SetActorEnableCollision(bIsActive);
+}
+
 void AARPickUpBase::Respawn()
 {
 	SetActive(true);
 }
 
-void AARPickUpBase::SetActive(bool bIsActive)
+void AARPickUpBase::SetActive(bool bNewIsActive)
 {
-	RootComponent->SetVisibility(bIsActive);
-	SetActorEnableCollision(bIsActive);
+	bIsActive = bNewIsActive;
+	OnRep_IsActive();
+}
+
+void AARPickUpBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(AARPickUpBase, bIsActive);
 }
 
 void AARPickUpBase::ApplyEffect_Implementation(APawn* Pawn)

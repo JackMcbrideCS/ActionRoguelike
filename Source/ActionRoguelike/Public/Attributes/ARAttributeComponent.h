@@ -35,10 +35,10 @@ protected:
 	UPROPERTY(BlueprintReadOnly, Replicated, Category = Attributes)
 	float Health;
 	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Attributes)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Replicated, Category = Attributes)
 	float MaxRage;
 
-	UPROPERTY(BlueprintReadOnly, Category = Attributes)
+	UPROPERTY(BlueprintReadOnly, Replicated, Category = Attributes)
 	float Rage;
 
 	UFUNCTION(NetMulticast, Reliable)

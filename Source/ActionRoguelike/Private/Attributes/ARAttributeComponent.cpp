@@ -154,5 +154,8 @@ void UARAttributeComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>
 
 	DOREPLIFETIME(UARAttributeComponent, Health);
 	DOREPLIFETIME(UARAttributeComponent, MaxHealth);
+	
+	DOREPLIFETIME(UARAttributeComponent, Rage);
+	DOREPLIFETIME(UARAttributeComponent, MaxRage);
 }
 

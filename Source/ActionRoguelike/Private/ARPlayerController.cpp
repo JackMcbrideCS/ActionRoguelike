@@ -8,3 +8,9 @@ void AARPlayerController::SetPawn(APawn* InPawn)
 	Super::SetPawn(InPawn);
 	OnPawnChanged.Broadcast(InPawn);
 }
+
+void AARPlayerController::BeginPlayingState()
+{
+	Super::BeginPlayingState();
+	BlueprintBeginPlayingState();
+}

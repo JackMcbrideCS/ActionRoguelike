@@ -18,5 +18,9 @@ protected:
 	UPROPERTY(BlueprintAssignable)
 	FOnPawnChanged OnPawnChanged;
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void BlueprintBeginPlayingState();
+	
 	virtual void SetPawn(APawn* InPawn) override;
+	virtual void BeginPlayingState() override;
 };

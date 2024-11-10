@@ -14,6 +14,7 @@ class ACTIONROGUELIKE_API AARItemChest : public AActor, public IARGameplayInterf
 
 	virtual bool CanInteract_Implementation(APawn* InstigatorPawn) const override;
 	virtual void Interact_Implementation(APawn* InstigatorPawn) override;
+	virtual void OnActorLoaded_Implementation() override;
 
 public:
 	UPROPERTY(EditAnywhere)
@@ -31,7 +32,7 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UStaticMeshComponent* LidMesh;
 
-	UPROPERTY(ReplicatedUsing = "OnRep_LidOpened", Replicated)
+	UPROPERTY(ReplicatedUsing = "OnRep_LidOpened", Replicated, SaveGame)
 	bool bLidOpen;
 
 	UFUNCTION()

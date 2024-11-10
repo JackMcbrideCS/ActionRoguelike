@@ -17,6 +17,11 @@ void AARItemChest::Interact_Implementation(APawn* InstigatorPawn)
 	OnRep_LidOpened();
 }
 
+void AARItemChest::OnActorLoaded_Implementation()
+{
+	OnRep_LidOpened();
+}
+
 // Sets default values
 AARItemChest::AARItemChest()
 {

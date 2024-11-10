@@ -176,9 +176,7 @@ void AARGameModeBase::WriteSaveGame()
 		}
 
 		FActorSaveData ActorData;
-		ActorData.ActorName = Actor->GetName();
-		ActorData.ActorTransform = Actor->GetActorTransform();
-
+		ActorData.SaveFromActor(Actor);
 		CurrentSaveGame->SavedActors.Add(ActorData);
 	}
 	
@@ -211,7 +209,8 @@ void AARGameModeBase::LoadSaveGame()
 		{
 			if (ActorData.ActorName == Actor->GetName())
 			{
-				Actor->SetActorTransform(ActorData.ActorTransform);
+				ActorData.LoadToActor(Actor);
+				IARGameplayInterface::Execute_OnActorLoaded(Actor);
 				break;
 			}
 		}

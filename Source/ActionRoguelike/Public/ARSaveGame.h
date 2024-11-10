@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/SaveGame.h"
+#include "Serialization/ObjectAndNameAsStringProxyArchive.h"
 #include "ARSaveGame.generated.h"
 
 USTRUCT()
@@ -18,6 +19,30 @@ public:
 
 	UPROPERTY()
 	FTransform ActorTransform;
+
+	UPROPERTY()
+	TArray<uint8> ByteData;
+
+	void SaveFromActor(AActor* Actor)
+	{
+		ActorName = Actor->GetName();
+		ActorTransform = Actor->GetActorTransform();
+
+		FMemoryWriter MemoryWriter(ByteData);
+		FObjectAndNameAsStringProxyArchive Archive(MemoryWriter, true);
+		Archive.ArIsSaveGame = true;
+		Actor->Serialize(Archive);
+	}
+	
+	void LoadToActor(AActor* Actor) const
+	{
+		Actor->SetActorTransform(ActorTransform);
+
+		FMemoryReader MemoryReader(ByteData);
+		FObjectAndNameAsStringProxyArchive Archive(MemoryReader, true);
+		Archive.ArIsSaveGame = true;
+		Actor->Serialize(Archive);
+	}
 };
 
 UCLASS()

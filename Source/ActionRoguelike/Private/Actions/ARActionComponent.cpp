@@ -21,6 +21,12 @@ void UARActionComponent::AddAction(AActor* Instigator, TSubclassOf<UARAction> Ac
 		return;
 	}
 
+	if (!GetOwner()->HasAuthority())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Client Attempting to AddAction. [Class: %s]"), *GetNameSafe(ActionClass));
+		return;
+	}
+
 	UARAction* NewAction = NewObject<UARAction>(this, ActionClass);
 	if (!ensure(NewAction))
 	{
@@ -87,11 +93,21 @@ bool UARActionComponent::StopActionByName(AActor* Instigator, FName ActionName)
 			continue;
 		}
 
+		if (!GetOwner()->HasAuthority())
+		{
+			ServerStopAction(Instigator, ActionName);
+		}
+
 		Action->StopAction(Instigator);
 		return true;
 	}
 
 	return false;
+}
+
+void UARActionComponent::ServerStopAction_Implementation(AActor* Instigator, FName ActionName)
+{
+	StopActionByName(Instigator, ActionName);
 }
 
 void UARActionComponent::ServerStartAction_Implementation(AActor* Instigator, FName ActionName)

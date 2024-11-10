@@ -48,7 +48,7 @@ void AARMagicProjectile::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent
 	}
 
 	UARGameplayFunctionLibrary::ApplyDirectionalDamage(GetInstigator(), OtherActor, Damage, DamageImpulseStrength, SweepResult);
-	if (ActionComponent)
+	if (ActionComponent && HasAuthority())
 	{
 		for (TSubclassOf<UARActionEffect> AppliedEffectClass : AppliedEffectClasses)
 		{

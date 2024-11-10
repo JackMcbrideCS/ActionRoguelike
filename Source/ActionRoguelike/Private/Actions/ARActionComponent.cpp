@@ -122,11 +122,10 @@ void UARActionComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAc
 	for (UARAction* Action : Actions)
 	{
 		FColor TextColour = Action->IsRunning() ? FColor::Blue : FColor::White;
-		FString ActionMessage = FString::Printf(TEXT("[%s] Action: %s : IsRunning: %s : Outer: %s"),
+		FString ActionMessage = FString::Printf(TEXT("[%s] Action: %s : IsRunning: %s"),
 			*GetNameSafe(GetOwner()),
-			*Action->ActionName.ToString(),
-			Action->IsRunning() ? TEXT("true") : TEXT("false"),
-			*GetNameSafe(GetOuter()));
+			*GetNameSafe(Action),
+			Action->IsRunning() ? TEXT("true") : TEXT("false"));
 
 		LogOnScreen(this, ActionMessage, TextColour, 0.0f);
 	}

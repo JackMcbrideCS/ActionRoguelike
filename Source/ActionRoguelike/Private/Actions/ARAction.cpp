@@ -11,25 +11,28 @@
 void UARAction::StartAction_Implementation(AActor* Instigator)
 {
 	UE_LOG(LogTemp, Log, TEXT("Running: %s"), *GetNameSafe(this));
-	LogOnScreen(this, FString::Printf(TEXT("Running: %s"), *ActionName.ToString()), FColor::Blue);
+	//LogOnScreen(this, FString::Printf(TEXT("Running: %s"), *ActionName.ToString()), FColor::Blue);
 
 	UARActionComponent* ActionComponent = GetOwningComponent();
 	ActionComponent->ActiveGameplayTags.AppendTags(GrantsTags);
-	bIsRunning = true;
+	RepData.bIsRunning = true;
+	RepData.Instigator = Instigator;
 }
 
 void UARAction::StopAction_Implementation(AActor* Instigator)
 {
 	UARActionComponent* ActionComponent = GetOwningComponent();
 	ActionComponent->ActiveGameplayTags.RemoveTags(GrantsTags);
-	bIsRunning = false;
+	RepData.bIsRunning = false;
+	RepData.Instigator = Instigator;
 
-	LogOnScreen(this, FString::Printf(TEXT("Stopped: %s"), *ActionName.ToString()), FColor::White);
+	//LogOnScreen(this, FString::Printf(TEXT("Stopped: %s"), *ActionName.ToString()), FColor::White);
+	UE_LOG(LogTemp, Log, TEXT("Stopped: %s"), *GetNameSafe(this));
 }
 
 bool UARAction::CanStart_Implementation(AActor* Instigator) const
 {
-	if (bIsRunning)
+	if (RepData.bIsRunning)
 	{
 		return false;
 	}
@@ -45,7 +48,7 @@ bool UARAction::CanStart_Implementation(AActor* Instigator) const
 
 bool UARAction::IsRunning_Implementation() const
 {
-	return bIsRunning;
+	return RepData.bIsRunning;
 }
 
 UWorld* UARAction::GetWorld() const
@@ -59,15 +62,15 @@ UWorld* UARAction::GetWorld() const
 	return Component->GetWorld();
 }
 
-void UARAction::OnRep_IsRunning()
+void UARAction::OnRep_RepData()
 {
-	if (bIsRunning)
+	if (RepData.bIsRunning)
 	{
-		StartAction(nullptr);
+		StartAction(RepData.Instigator);
 	}
 	else
 	{
-		StopAction(nullptr);
+		StopAction(RepData.Instigator);
 	}
 }
 
@@ -90,5 +93,5 @@ void UARAction::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetim
 {
 	UObject::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	DOREPLIFETIME(UARAction, bIsRunning);
+	DOREPLIFETIME(UARAction, RepData);
 }

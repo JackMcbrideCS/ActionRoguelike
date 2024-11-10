@@ -84,13 +84,20 @@ bool UARAttributeComponent::ApplyHealthChange(AActor* Instigator, float Delta)
 	}
 	
 	const float OldHealth = Health;
-	Health = FMath::Clamp(Health + Delta, 0.0f, MaxHealth);
-	Delta = Health - OldHealth;
+	const float NewHealth = FMath::Clamp(Health + Delta, 0.0f, MaxHealth);
+	Delta = NewHealth - OldHealth;
 	if (Delta == 0.0f)
 	{
 		return false;
 	}
-
+	
+	if (!GetOwner()->HasAuthority())
+	{
+		return true;
+	}
+	
+	Health = NewHealth;
+	MultiCastHealthChanged(Instigator, Health, Delta);
 	if (Health == 0.0f)
 	{
 		AARGameModeBase* GameMode = GetWorld()->GetAuthGameMode<AARGameModeBase>();
@@ -100,7 +107,6 @@ bool UARAttributeComponent::ApplyHealthChange(AActor* Instigator, float Delta)
 		}
 	}
 	
-	MultiCastHealthChanged(Instigator, Health, Delta);
 	return true;
 }
 

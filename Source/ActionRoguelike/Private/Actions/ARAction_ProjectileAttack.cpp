@@ -28,10 +28,13 @@ void UARAction_ProjectileAttack::StartAction_Implementation(AActor* Instigator)
 	Character->PlayAnimMontage(AnimMontage);
 	UGameplayStatics::SpawnEmitterAttached(CastingParticleEffect, Character->GetMesh(), MuzzleSocketName, FVector::ZeroVector, FRotator::ZeroRotator, EAttachLocation::SnapToTarget);
 
-	FTimerDelegate Delegate;
-	FTimerHandle TimerHandle_AttackDelay;
-	Delegate.BindUFunction(this, TEXT("AttackDelay_TimerElapsed"), Character);
-	GetWorld()->GetTimerManager().SetTimer(TimerHandle_AttackDelay, Delegate, AttackDelay, false);
+	if (GetOwner()->HasAuthority())
+	{
+		FTimerDelegate Delegate;
+		FTimerHandle TimerHandle_AttackDelay;
+		Delegate.BindUFunction(this, TEXT("AttackDelay_TimerElapsed"), Character);
+		GetWorld()->GetTimerManager().SetTimer(TimerHandle_AttackDelay, Delegate, AttackDelay, false);
+	}
 }
 
 void UARAction_ProjectileAttack::AttackDelay_TimerElapsed(ACharacter* InstigatorCharacter)

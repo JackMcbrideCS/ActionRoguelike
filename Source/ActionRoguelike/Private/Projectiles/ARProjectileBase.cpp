@@ -30,6 +30,8 @@ AARProjectileBase::AARProjectileBase()
 	MovementComponent->InitialSpeed = 1000.0f;
 	MovementComponent->bRotationFollowsVelocity = true;
 	MovementComponent->bInitialVelocityInLocalSpace = true;
+
+	SetReplicates(true);
 }
 
 // Called when the game starts or when spawned

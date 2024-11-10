@@ -22,6 +22,8 @@ AARPickUpBase::AARPickUpBase()
 
 	MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>("Mesh Component");
 	RootComponent = MeshComponent;
+
+	SetReplicates(true);
 }
 
 bool AARPickUpBase::CanInteract_Implementation(APawn* InstigatorPawn) const

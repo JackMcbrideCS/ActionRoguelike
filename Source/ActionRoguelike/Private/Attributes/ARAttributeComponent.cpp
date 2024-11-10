@@ -113,13 +113,19 @@ bool UARAttributeComponent::ApplyHealthChange(AActor* Instigator, float Delta)
 bool UARAttributeComponent::ApplyRageChange(AActor* Instigator, float Delta)
 {
 	const float OldRage = Rage;
-	Rage = FMath::Clamp(Rage + Delta, 0.0f, MaxRage);
-	Delta = Rage - OldRage;
+	const float NewRage = FMath::Clamp(Rage + Delta, 0.0f, MaxRage);
+	Delta = NewRage - OldRage;
 	if (Delta == 0.0f)
 	{
 		return false;
 	}
-	
+
+	if (!GetOwner()->HasAuthority())
+	{
+		return true;
+	}
+
+	Rage = NewRage;
 	MultiCastRageChanged(Instigator, Rage, Delta);
 	return true;
 }

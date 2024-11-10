@@ -42,28 +42,12 @@ AARCharacter::AARCharacter()
 void AARCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
-	const APlayerController* PlayerController = Cast<APlayerController>(Controller);
-	if (!ensure(PlayerController))
-	{
-		return;
-	}
-	
-	const ULocalPlayer* LocalPlayer = PlayerController->GetLocalPlayer();
-	UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(LocalPlayer);
-	if (!ensure(Subsystem))
-	{
-		return;
-	}
-
-	Subsystem->AddMappingContext(DefaultMappingContext, 0);
-	AttributeComponent->OnHealthChanged.AddDynamic(this, &AARCharacter::OnHealthChanged);
 }
 
 void AARCharacter::OnMove(const FInputActionValue& Value)
 {
 	const FVector2D InputValue = Value.Get<FVector2D>();
-	FRotator ControlRotation = Controller->GetControlRotation();
+	FRotator ControlRotation = GetController()->GetControlRotation();
 	ControlRotation.Pitch = 0.0f;
 	ControlRotation.Roll = 0.0f;
 	const FVector ForwardVector = FRotationMatrix(ControlRotation).GetUnitAxis(EAxis::X);
@@ -137,6 +121,7 @@ void AARCharacter::OnHealthChanged(AActor* InstigatorActor, UARAttributeComponen
 
 	APlayerController* PlayerController = Cast<APlayerController>(GetController());
 	DisableInput(PlayerController);
+	SetLifeSpan(5.0f);
 }
 
 bool AARCharacter::AimTrace(FHitResult& OutHit, const float TraceLength, const FCollisionObjectQueryParams& ObjectQueryParams) const
@@ -189,12 +174,28 @@ void AARCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+	const APlayerController* PlayerController = Cast<APlayerController>(GetController());
+	if (!ensure(PlayerController))
+	{
+		return;
+	}
+
+	const ULocalPlayer* LocalPlayer = PlayerController->GetLocalPlayer();
+	UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(LocalPlayer);
+	if (!ensure(Subsystem))
+	{
+		return;
+	}
+
+	Subsystem->ClearAllMappings();
+	Subsystem->AddMappingContext(DefaultMappingContext, 0);
+
 	UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent);
 	if (!ensure(EnhancedInputComponent))
 	{
 		return;
 	}
-
+	
 	EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AARCharacter::OnMove);
 	EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AARCharacter::OnLook);
 	EnhancedInputComponent->BindAction(PrimaryAttackAction, ETriggerEvent::Started, this, &AARCharacter::OnPrimaryAttack);
@@ -205,6 +206,13 @@ void AARCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Started, this, &AARCharacter::OnSprintStart);
 	EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Completed, this, &AARCharacter::OnSprintStop);
 	EnhancedInputComponent->BindAction(ParryAction, ETriggerEvent::Started, this, &AARCharacter::OnParry);
+}
+
+void AARCharacter::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+	
+	AttributeComponent->OnHealthChanged.AddDynamic(this, &AARCharacter::OnHealthChanged);
 }
 
 void AARCharacter::DrawDebugRotationArrows() const

@@ -69,4 +69,5 @@ void AARPlayerState::LoadPlayerState_Implementation(UARSaveGame* SaveGame)
 	}
 	
 	Credits = SaveGame->Credits;
+	OnCreditsChanged.Broadcast(this, Credits, 0);
 }
